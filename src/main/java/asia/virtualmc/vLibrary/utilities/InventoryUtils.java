@@ -15,8 +15,11 @@ import java.util.Set;
 public class InventoryUtils {
 
     /**
-     * Store player's current inventory, retrieving only valid custom items.
-     * Valid custom items -> has PDC data.
+     * Creates a snapshot of a player's inventory, storing only items that contain a specific Persistent Data Key.
+     *
+     * @param player   The player whose inventory is being captured.
+     * @param ITEM_KEY The NamespacedKey used to identify relevant items.
+     * @return A map containing the slot index and corresponding ItemStack for matching items.
      */
     public static Map<Integer, ItemStack> createSnapshot(@NotNull Player player,
                                                          @NotNull NamespacedKey ITEM_KEY) {
@@ -36,10 +39,17 @@ public class InventoryUtils {
     }
 
     /**
-     * Store player's current inventory, retrieving only valid custom items.
-     * Valid custom items -> has PDC data.
+     * Creates a snapshot of a player's inventory, storing only items that have a specific Persistent Data Key
+     * and match a given set of item IDs.
+     *
+     * @param player   The player whose inventory is being captured.
+     * @param ITEM_KEY The NamespacedKey used to retrieve the item's ID.
+     * @param itemIDs  A set of valid item IDs to filter the items.
+     * @return A map containing the slot index and corresponding ItemStack for matching items.
      */
-    public static Map<Integer, ItemStack> createSnapshot(Player player, NamespacedKey ITEM_KEY, Set<Integer> itemIDs) {
+    public static Map<Integer, ItemStack> createSnapshot(@NotNull Player player,
+                                                         @NotNull NamespacedKey ITEM_KEY,
+                                                         @NotNull Set<Integer> itemIDs) {
         Map<Integer, ItemStack> snapshot = new HashMap<>();
 
         for (int i = 0; i < 36; i++) {
@@ -55,7 +65,15 @@ public class InventoryUtils {
         return snapshot;
     }
 
-    public static Map<Integer, ItemStack> createSnapshot(Player player, Set<Material> materials) {
+    /**
+     * Creates a snapshot of a player's inventory, storing only items that match a specified set of materials.
+     *
+     * @param player    The player whose inventory is being captured.
+     * @param materials A set of materials to filter the items.
+     * @return A map containing the slot index and corresponding ItemStack for matching items.
+     */
+    public static Map<Integer, ItemStack> createSnapshot(@NotNull Player player,
+                                                         @NotNull Set<Material> materials) {
         Map<Integer, ItemStack> snapshot = new HashMap<>();
 
         for (int i = 0; i < 36; i++) {
@@ -70,7 +88,13 @@ public class InventoryUtils {
         return snapshot;
     }
 
-    public static Map<Integer, ItemStack> createSnapshot(Player player) {
+    /**
+     * Creates a full snapshot of a player's inventory, storing all items in their respective slots.
+     *
+     * @param player The player whose inventory is being captured.
+     * @return A map containing the slot index and corresponding ItemStack for all items in the inventory.
+     */
+    public static Map<Integer, ItemStack> createSnapshot(@NotNull Player player) {
         Map<Integer, ItemStack> snapshot = new HashMap<>();
 
         for (int i = 0; i < 36; i++) {
@@ -83,7 +107,15 @@ public class InventoryUtils {
         return snapshot;
     }
 
-    public static boolean compareSnapshot(Player player, Map<Integer, ItemStack> snapshot) {
+    /**
+     * Compares the current state of a player's inventory against a previously taken snapshot.
+     *
+     * @param player   The player whose inventory is being compared.
+     * @param snapshot The snapshot to compare against.
+     * @return True if the inventory matches the snapshot exactly, otherwise false.
+     */
+    public static boolean compareSnapshot(@NotNull Player player,
+                                          @NotNull Map<Integer, ItemStack> snapshot) {
         for (Map.Entry<Integer, ItemStack> entry : snapshot.entrySet()) {
             ItemStack current = player.getInventory().getItem(entry.getKey());
             ItemStack snapshotItem = entry.getValue();
