@@ -4,6 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AdventureUtils {
     private static final MiniMessage miniMessage = MiniMessage.miniMessage();
     private static final LegacyComponentSerializer legacyAmpersand = LegacyComponentSerializer.legacyAmpersand();
@@ -17,5 +20,15 @@ public class AdventureUtils {
         }
 
         return miniMessage.deserialize(string);
+    }
+
+    public static List<Component> convertToComponent(List<String> strings) {
+        List<Component> components = new ArrayList<>();
+
+        for (String string : strings) {
+            components.add(convertToComponent(string));
+        }
+
+        return components;
     }
 }
