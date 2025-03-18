@@ -11,13 +11,13 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class HikariSource {
+public class ConnectionSource {
     private final VLibrary vlib;
     private static HikariDataSource hikariDataSource;
     private Database database;
     private record Database(String host, int port, String dbName, String user, String password) {}
 
-    public HikariSource(@NotNull VLibrary vlib) {
+    public ConnectionSource(@NotNull VLibrary vlib) {
         this.vlib = vlib;
         initialize();
     }
@@ -73,8 +73,8 @@ public class HikariSource {
         }
     }
 
-    public static HikariDataSource getConnection() {
-        return hikariDataSource;
+    public static Connection getConnection() throws SQLException {
+        return hikariDataSource.getConnection();
     }
 
     public static void closeConnection() {
