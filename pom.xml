@@ -136,6 +136,33 @@
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
+
+        <!-- Nexo API -->
+        <repository>
+            <id>com.nexomc</id>
+            <url>https://repo.nexomc.com/releases</url>
+        </repository>
+
+        <!-- HologramLib -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+
+        <repository>
+            <id>evoke-snapshots</id>
+            <url>https://maven.evokegames.gg/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+        <!-- ModelEngine API -->
+        <repository>
+            <id>nexus</id>
+            <name>Lumine Public</name>
+            <url>https://mvn.lumine.io/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -177,11 +204,11 @@
             <version>0.10.19</version>
         </dependency>
 
-        <!-- DecentHolograms API -->
+        <!-- HologramLib -->
         <dependency>
-            <groupId>com.github.decentsoftware-eu</groupId>
-            <artifactId>decentholograms</artifactId>
-            <version>2.8.12</version>
+            <groupId>com.github.HologramLib</groupId>
+            <artifactId>HologramLib</artifactId>
+            <version>1.7.2</version>
             <scope>provided</scope>
         </dependency>
 
@@ -233,12 +260,50 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- RealisticSeasons -->
         <dependency>
             <groupId>me.casperge.realisticseasons</groupId>
             <artifactId>RealisticSeasonsMaven</artifactId>
             <version>11.6.7</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/RealisticSeasons-11.6.7.jar</systemPath>
+        </dependency>
+
+        <!-- Nexo API -->
+        <dependency>
+            <groupId>com.nexomc</groupId>
+            <artifactId>nexo</artifactId>
+            <version>1.1.0</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- JFreeChart -->
+        <dependency>
+            <groupId>jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+
+        <!-- Particle API -->
+        <dependency>
+            <groupId>com.github.fierioziy.particlenativeapi</groupId>
+            <artifactId>ParticleNativeAPI-plugin</artifactId>
+            <version>4.4.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- ModelEngine API -->
+        <dependency>
+            <groupId>com.ticxo.modelengine</groupId>
+            <artifactId>ModelEngine</artifactId>
+            <version>R4.0.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

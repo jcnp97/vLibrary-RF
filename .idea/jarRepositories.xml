@@ -2,19 +2,19 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
-      <option name="id" value="central" />
-      <option name="name" value="central" />
-      <option name="url" value="https://repo.maven.apache.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="fren_gor" />
-      <option name="name" value="fren_gor" />
-      <option name="url" value="https://nexus.frengor.com/repository/public/" />
+      <option name="id" value="nexo" />
+      <option name="name" value="nexo" />
+      <option name="url" value="https://repo.nexomc.com/releases" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jitpack.io" />
+      <option name="name" value="jitpack.io" />
+      <option name="url" value="https://jitpack.io" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="sonatype" />
@@ -42,9 +42,14 @@
       <option name="url" value="https://repo1.maven.org/maven2" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="jboss.community" />
-      <option name="name" value="JBoss Community repository" />
-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+      <option name="id" value="nexus" />
+      <option name="name" value="Lumine Public" />
+      <option name="url" value="https://mvn.lumine.io/repository/maven-public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sbdevelopment-repo-releases" />
+      <option name="name" value="SBDevelopment Repository" />
+      <option name="url" value="https://repo.sbdevelopment.tech/releases" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="jitpack" />
@@ -52,9 +57,39 @@
       <option name="url" value="https://jitpack.io/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="respark-releases" />
+      <option name="name" value="Respark - Maven Repository" />
+      <option name="url" value="https://maven.respark.dev/releases" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="sk89q-repo" />
       <option name="name" value="sk89q-repo" />
       <option name="url" value="https://maven.enginehub.org/repo/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="evoke-snapshots" />
+      <option name="name" value="evoke-snapshots" />
+      <option name="url" value="https://maven.evokegames.gg/snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="central" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="fren_gor" />
+      <option name="name" value="fren_gor" />
+      <option name="url" value="https://nexus.frengor.com/repository/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="com.nexomc" />
+      <option name="name" value="com.nexomc" />
+      <option name="url" value="https://repo.nexomc.com/releases" />
     </remote-repository>
   </component>
 </project>

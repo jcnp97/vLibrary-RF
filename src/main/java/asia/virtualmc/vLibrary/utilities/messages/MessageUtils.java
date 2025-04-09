@@ -1,6 +1,6 @@
 package asia.virtualmc.vLibrary.utilities.messages;
 
-import asia.virtualmc.vLibrary.utilities.SoundUtils;
+import asia.virtualmc.vLibrary.utilities.minecraft.SoundUtils;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import net.kyori.adventure.title.Title;
@@ -17,11 +17,9 @@ import java.time.Duration;
 public class MessageUtils {
 
     public static void sendPlayerMessage(@NotNull Player player, String message) {
-        if (!player.isOnline()) {
-            return;
+        if (player.isOnline()) {
+            player.sendMessage(AdventureUtils.convertToComponent("<#8BFFA9>" + message));
         }
-
-        player.sendMessage(AdventureUtils.convertToComponent("<#8BFFA9>" + message));
     }
 
     public static void sendBroadcastMessage(String message) {
@@ -29,24 +27,20 @@ public class MessageUtils {
     }
 
     public static void sendTitleMessage(@NotNull Player player, String title, String subtitle) {
-        if (!player.isOnline()) {
-            return;
+        if (player.isOnline()) {
+            Title fullTitle = Title.title(AdventureUtils.convertToComponent(title),
+                    AdventureUtils.convertToComponent(subtitle));
+            player.showTitle(fullTitle);
         }
-
-        Title fullTitle = Title.title(AdventureUtils.convertToComponent(title),
-                AdventureUtils.convertToComponent(subtitle));
-        player.showTitle(fullTitle);
     }
 
     public static void sendTitleMessage(@NotNull Player player, String title, String subtitle, long duration) {
-        if (!player.isOnline()) {
-            return;
+        if (player.isOnline()) {
+            Title.Times TITLE_TIMES = Title.Times.times(Duration.ZERO, Duration.ofMillis(duration), Duration.ZERO);
+            Title fullTitle = Title.title(AdventureUtils.convertToComponent(title),
+                    AdventureUtils.convertToComponent(subtitle), TITLE_TIMES);
+            player.showTitle(fullTitle);
         }
-
-        Title.Times TITLE_TIMES = Title.Times.times(Duration.ZERO, Duration.ofMillis(duration), Duration.ZERO);
-        Title fullTitle = Title.title(AdventureUtils.convertToComponent(title),
-                AdventureUtils.convertToComponent(subtitle), TITLE_TIMES);
-        player.showTitle(fullTitle);
     }
 
     public static void sendActionBarMessage(@NotNull Player player, String message) {

@@ -1,8 +1,8 @@
 package asia.virtualmc.vLibrary.storage.database;
 
 import asia.virtualmc.vLibrary.VLibrary;
-import asia.virtualmc.vLibrary.utilities.YAMLUtils;
-import asia.virtualmc.vLibrary.utilities.messages.ConsoleMessageUtils;
+import asia.virtualmc.vLibrary.utilities.files.YAMLUtils;
+import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public class ConnectionSource {
 
             try (Connection connection = hikariDataSource.getConnection()) {
                 if (connection != null && !connection.isClosed()) {
-                    ConsoleMessageUtils.sendConsoleMessage("Successfully connected to the MySQL database.");
+                    ConsoleUtils.sendConsoleMessage("Successfully connected to the MySQL database.");
                 }
             }
         } catch (SQLException e) {

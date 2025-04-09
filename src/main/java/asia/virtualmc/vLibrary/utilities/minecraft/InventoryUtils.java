@@ -1,4 +1,4 @@
-package asia.virtualmc.vLibrary.utilities;
+package asia.virtualmc.vLibrary.utilities.minecraft;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

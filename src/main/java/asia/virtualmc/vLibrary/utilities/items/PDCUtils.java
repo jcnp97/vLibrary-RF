@@ -57,4 +57,32 @@ public class PDCUtils {
         }
         return false;
     }
+
+    public static ItemStack addPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey PDC_KEY, int value) {
+        ItemStack clone = item.clone();
+        ItemMeta meta = clone.getItemMeta();
+        if (meta == null) {
+            throw new IllegalArgumentException("Meta cannot be null when applying a PDC.");
+        }
+
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(PDC_KEY, PersistentDataType.INTEGER, value);
+        clone.setItemMeta(meta);
+
+        return clone;
+    }
+
+    public static ItemStack addPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey PDC_KEY, double value) {
+        ItemStack clone = item.clone();
+        ItemMeta meta = clone.getItemMeta();
+        if (meta == null) {
+            throw new IllegalArgumentException("Meta cannot be null when applying a PDC.");
+        }
+
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(PDC_KEY, PersistentDataType.DOUBLE, value);
+        clone.setItemMeta(meta);
+
+        return clone;
+    }
 }

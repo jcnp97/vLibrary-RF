@@ -1,13 +1,18 @@
 package asia.virtualmc.vLibrary.utilities.items;
 
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 public class ItemStackUtils {
 
@@ -34,5 +39,27 @@ public class ItemStackUtils {
         }
 
         return 0;
+    }
+
+    public static void giveItem(Player player, ItemStack item, int amount) {
+        if (item == null || amount <= 0) return;
+
+        PlayerInventory inventory = player.getInventory();
+        Location dropLocation = player.getLocation();
+
+        while (amount > 0) {
+            int stackSize = Math.min(item.getMaxStackSize(), amount);
+            ItemStack stackToGive = item.clone();
+            stackToGive.setAmount(stackSize);
+
+            HashMap<Integer, ItemStack> leftover = inventory.addItem(stackToGive);
+            if (!leftover.isEmpty()) {
+                for (ItemStack leftoverItem : leftover.values()) {
+                    player.getWorld().dropItemNaturally(dropLocation, leftoverItem);
+                }
+            }
+
+            amount -= stackSize;
+        }
     }
 }

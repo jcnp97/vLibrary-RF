@@ -1,7 +1,7 @@
 package asia.virtualmc.vLibrary.storage.database;
 
 import asia.virtualmc.vLibrary.VLibrary;
-import asia.virtualmc.vLibrary.utilities.messages.ConsoleMessageUtils;
+import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -45,7 +45,7 @@ public class PlayerIDData implements Listener {
         try (Connection connection = ConnectionSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();
-            ConsoleMessageUtils.sendConsoleMessage("Table 'vlib_players' checked/created successfully.");
+            ConsoleUtils.sendMessage("Table 'vlib_players' checked/created successfully.");
         } catch (SQLException e) {
             vlib.getLogger().severe("Error creating table: " + e.getMessage());
         }
