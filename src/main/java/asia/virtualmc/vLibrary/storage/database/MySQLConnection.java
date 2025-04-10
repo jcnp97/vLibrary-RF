@@ -11,13 +11,13 @@ import dev.dejvokep.boostedyaml.block.implementation.Section;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionSource {
+public class MySQLConnection {
     private final VLibrary vlib;
     private static HikariDataSource hikariDataSource;
     private Database database;
     private record Database(String host, int port, String dbName, String user, String password) {}
 
-    public ConnectionSource(@NotNull VLibrary vlib) {
+    public MySQLConnection(@NotNull VLibrary vlib) {
         this.vlib = vlib;
         initialize();
     }
@@ -43,7 +43,7 @@ public class ConnectionSource {
 
             try (Connection connection = hikariDataSource.getConnection()) {
                 if (connection != null && !connection.isClosed()) {
-                    ConsoleUtils.sendConsoleMessage("Successfully connected to the MySQL database.");
+                    ConsoleUtils.sendMessage("Successfully connected to the MySQL database.");
                 }
             }
         } catch (SQLException e) {

@@ -9,6 +9,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class PDCUtils {
 
+    public static PersistentDataContainer getPDC(@NotNull ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta != null) {
+            return meta.getPersistentDataContainer();
+        }
+
+        return null;
+    }
+
     public static boolean isCustomItem(@NotNull ItemStack item, @NotNull NamespacedKey ITEM_KEY) {
         if (!item.hasItemMeta()) return false;
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();

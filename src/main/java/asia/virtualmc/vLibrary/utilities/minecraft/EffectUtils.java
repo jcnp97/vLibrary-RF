@@ -1,5 +1,6 @@
 package asia.virtualmc.vLibrary.utilities.minecraft;
 
+import asia.virtualmc.vLibrary.VLibrary;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
@@ -14,15 +15,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class EffectUtils {
 
-    public static void spawnFireworks(@NotNull Plugin plugin,
-                                      @NotNull Player player,
+    public static void spawnFireworks(@NotNull Player player,
                                       int amount,
                                       long interval) {
         if (!player.isOnline()) {
             return;
         }
+
         World world = player.getWorld();
         Location location = player.getLocation();
+        Plugin plugin = VLibrary.getInstance();
 
         new BukkitRunnable() {
             int count = 0;

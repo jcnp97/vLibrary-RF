@@ -30,7 +30,7 @@ public class TexturePathReplacer {
         YamlDocument yaml = YAMLUtils.getYamlDocument(vlib, "texture-path-replacer/config.yml");
 
         if (yaml == null) {
-            vlib.getLogger().severe("Couldn't find config.yml from texture-path-replacer folder!");
+            vlib.getLogger().severe("Couldn't find redis.yml from texture-path-replacer folder!");
             return;
         }
 

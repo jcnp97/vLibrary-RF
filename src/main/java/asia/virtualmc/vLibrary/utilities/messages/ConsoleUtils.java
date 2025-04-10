@@ -10,7 +10,12 @@ public class ConsoleUtils {
 
     public static void sendMessage(String string) {
         CommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(AdventureUtils.convertToComponent(prefix + string));
+        console.sendMessage(AdventureUtils.convertToComponent("<green>" + prefix + string));
+    }
+
+    public static void sendSevereMessage(String string) {
+        CommandSender console = Bukkit.getConsoleSender();
+        console.sendMessage(AdventureUtils.convertToComponent("<red>" + prefix + string));
     }
 
     public static void sendMessage(@NotNull Plugin plugin, String string) {

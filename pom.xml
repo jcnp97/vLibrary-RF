@@ -305,5 +305,12 @@
             <version>R4.0.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Redis -->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>5.2.0</version>
+        </dependency>
     </dependencies>
 </project>
