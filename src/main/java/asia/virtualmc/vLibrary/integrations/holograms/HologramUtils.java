@@ -1,6 +1,7 @@
-package asia.virtualmc.vLibrary.integrations;
+package asia.virtualmc.vLibrary.integrations.holograms;
 
 import asia.virtualmc.vLibrary.VLibrary;
+import asia.virtualmc.vLibrary.integrations.packet_events.PacketEventsUtils;
 import com.maximde.hologramlib.HologramLib;
 import com.maximde.hologramlib.__relocated__.me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import com.maximde.hologramlib.hologram.*;

@@ -123,4 +123,11 @@ public class RedisUtils {
     public static boolean hasConnection() {
         return jedisPool != null;
     }
+
+    /**
+     * Retrieves the DEFAULT_EXPIRY_SECONDS.
+     *
+     * @return the current value of DEFAULT_EXPIRY_SECONDS.
+     */
+    public static int getDefaultExpirySeconds() { return DEFAULT_EXPIRY_SECONDS; }
 }

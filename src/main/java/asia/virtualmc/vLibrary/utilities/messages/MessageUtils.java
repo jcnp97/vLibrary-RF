@@ -1,5 +1,6 @@
 package asia.virtualmc.vLibrary.utilities.messages;
 
+import asia.virtualmc.vLibrary.enums.EnumsLib;
 import asia.virtualmc.vLibrary.utilities.minecraft.SoundUtils;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
@@ -22,8 +23,27 @@ public class MessageUtils {
         }
     }
 
+    public static void sendPlayerMessage(@NotNull Player player, String message, EnumsLib.MessageType type) {
+        if (player.isOnline()) {
+
+            switch (type) {
+                case RED -> player.sendMessage(AdventureUtils.convertToComponent("<white>ꐩ <red>" + message));
+                case GREEN -> player.sendMessage(AdventureUtils.convertToComponent("<white>ꐪ <green>" + message));
+                case YELLOW -> player.sendMessage(AdventureUtils.convertToComponent("<white>ꐫ <gold>" + message));
+            }
+        }
+    }
+
     public static void sendBroadcastMessage(String message) {
         Bukkit.getServer().sendMessage(AdventureUtils.convertToComponent(message));
+    }
+
+    public static void sendBroadcastMessage(String message, EnumsLib.MessageType type) {
+        switch (type) {
+            case RED -> Bukkit.getServer().sendMessage(AdventureUtils.convertToComponent("<white>ꐩ <red>" + message));
+            case GREEN -> Bukkit.getServer().sendMessage(AdventureUtils.convertToComponent("<white>ꐪ <green>" + message));
+            case YELLOW -> Bukkit.getServer().sendMessage(AdventureUtils.convertToComponent("<white>ꐫ <gold>" + message));
+        }
     }
 
     public static void sendTitleMessage(@NotNull Player player, String title, String subtitle) {
@@ -45,6 +65,26 @@ public class MessageUtils {
 
     public static void sendActionBarMessage(@NotNull Player player, String message) {
         player.sendActionBar(AdventureUtils.convertToComponent(message));
+    }
+
+    public static void sendActionBarMessage(@NotNull Player player, String message, EnumsLib.MessageType type) {
+        if (player.isOnline()) {
+            switch (type) {
+                case RED -> player.sendActionBar(AdventureUtils.convertToComponent("<white>ꐩ <red>" + message));
+                case GREEN -> player.sendActionBar(AdventureUtils.convertToComponent("<white>ꐪ <green>" + message));
+                case YELLOW -> player.sendActionBar(AdventureUtils.convertToComponent("<white>ꐫ <gold>" + message));
+            }
+        }
+    }
+
+    public static void sendActionBarMessage(String message, EnumsLib.MessageType type) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            switch (type) {
+                case RED -> player.sendActionBar(AdventureUtils.convertToComponent("<white>ꐩ <red>" + message));
+                case GREEN -> player.sendActionBar(AdventureUtils.convertToComponent("<white>ꐪ <green>" + message));
+                case YELLOW -> player.sendActionBar(AdventureUtils.convertToComponent("<white>ꐫ <gold>" + message));
+            }
+        }
     }
 
     public static void sendToastMessage(@NotNull Plugin plugin, @NotNull Player player, Material material, int modelData) {

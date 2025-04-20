@@ -17,6 +17,18 @@ public class DigitUtils {
     }
 
     /**
+     * Returns the value rounded to the specified number of decimal places.
+     *
+     * @param value The original float value to round.
+     * @param decimals The number of decimal places to keep.
+     * @return The value rounded to the specified decimal places.
+     */
+    public static float getPreciseValue(float value, int decimals) {
+        String format = "%." + decimals + "f";
+        return Float.parseFloat(String.format(format, value));
+    }
+
+    /**
      * Formats the given value to two decimal places with comma separators.
      *
      * @param value The double value to format.
@@ -102,6 +114,7 @@ public class DigitUtils {
                 num -= values[i];
             }
         }
+
         return roman.toString();
     }
 }

@@ -2,7 +2,7 @@ package asia.virtualmc.vLibrary;
 
 import asia.virtualmc.vLibrary.commands.CommandManager;
 import asia.virtualmc.vLibrary.core.CoreManager;
-import asia.virtualmc.vLibrary.integrations.HologramUtils;
+import asia.virtualmc.vLibrary.integrations.holograms.HologramUtils;
 import asia.virtualmc.vLibrary.integrations.IntegrationManager;
 import com.maximde.hologramlib.HologramLib;
 import dev.jorel.commandapi.CommandAPI;

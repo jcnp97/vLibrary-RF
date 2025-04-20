@@ -1,4 +1,4 @@
-package asia.virtualmc.vLibrary.integrations;
+package asia.virtualmc.vLibrary.integrations.worldguard;
 
 import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.events.worldguard.WGEntryHandler;

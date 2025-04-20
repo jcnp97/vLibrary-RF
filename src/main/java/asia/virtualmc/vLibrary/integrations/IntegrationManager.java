@@ -2,6 +2,11 @@ package asia.virtualmc.vLibrary.integrations;
 
 import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.events.ray_trace.RayTraceTask;
+import asia.virtualmc.vLibrary.integrations.holograms.HologramUtils;
+import asia.virtualmc.vLibrary.integrations.realistic_seasons.SeasonsUtils;
+import asia.virtualmc.vLibrary.integrations.vault.VaultEconomy;
+import asia.virtualmc.vLibrary.integrations.vault.VaultPermissions;
+import asia.virtualmc.vLibrary.integrations.worldguard.WorldGuardUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class IntegrationManager {

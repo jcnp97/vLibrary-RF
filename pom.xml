@@ -78,7 +78,6 @@
                                 </filter>
                             </filters>
 
-                            <!--                            <minimizeJar>false</minimizeJar>-->
                         </configuration>
                     </execution>
                 </executions>

@@ -1,6 +1,7 @@
-package asia.virtualmc.vLibrary.integrations;
+package asia.virtualmc.vLibrary.integrations.vault;
 
 import asia.virtualmc.vLibrary.VLibrary;
+import asia.virtualmc.vLibrary.enums.EnumsLib;
 import asia.virtualmc.vLibrary.utilities.text.DigitUtils;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import asia.virtualmc.vLibrary.utilities.messages.MessageUtils;
@@ -12,8 +13,10 @@ import org.jetbrains.annotations.NotNull;
 public class VaultEconomy {
     private final VLibrary vlib;
     private static Economy economy;
+    private static VaultEconomy vaultEconomy;
 
     public VaultEconomy(VLibrary vlib) {
+        vaultEconomy = this;
         this.vlib = vlib;
         initialize();
     }
@@ -37,25 +40,52 @@ public class VaultEconomy {
         ConsoleUtils.sendMessage("Successfully hooked into: " + economy.getName());
     }
 
+//    /**
+//     * Adds money to a player's balance
+//     *
+//     * @param player The player to add money to
+//     * @param amount The amount to add
+//     * @return The new balance
+//     */
+//    public double addMoney(@NotNull Player player, double amount) {
+//        if (amount <= 0) {
+//            return economy.getBalance(player);
+//        }
+//
+//        double rounded = DigitUtils.getPreciseValue(amount, 2);
+//        economy.depositPlayer(player, rounded);
+//        double newBalance = economy.getBalance(player);
+//
+//        MessageUtils.sendPlayerMessage(player, "You have received $" + rounded + ". You now have $" + newBalance + ".");
+//
+//        return newBalance;
+//    }
+
     /**
      * Adds money to a player's balance
      *
      * @param player The player to add money to
      * @param amount The amount to add
-     * @return The new balance
+     * @return true if the transaction was successful, false if the player doesn't have enough money
      */
-    public double addMoney(@NotNull Player player, double amount) {
+    public boolean addMoney(@NotNull Player player, double amount) {
         if (amount <= 0) {
-            return economy.getBalance(player);
+            return true;
         }
 
-        double rounded = DigitUtils.getPreciseValue(amount, 2);
-        economy.depositPlayer(player, rounded);
-        double newBalance = economy.getBalance(player);
+        try {
+            double rounded = DigitUtils.getPreciseValue(amount, 2);
+            economy.depositPlayer(player, rounded);
+            double newBalance = economy.getBalance(player);
+            MessageUtils.sendPlayerMessage(player, "You have received $" + rounded + ". You now have $" + newBalance + ".", EnumsLib.MessageType.GREEN);
 
-        MessageUtils.sendPlayerMessage(player, "You have received $" + rounded + ". You now have $" + newBalance + ".");
+            return true;
 
-        return newBalance;
+        } catch (Exception e) {
+            ConsoleUtils.sendSevereMessage("An error occurred when trying to remove money from " + player.getName());
+            e.getMessage();
+            return false;
+        }
     }
 
     /**
@@ -74,14 +104,21 @@ public class VaultEconomy {
             return false;
         }
 
-        double rounded = DigitUtils.getPreciseValue(amount, 2);
-        economy.withdrawPlayer(player, rounded);
-        double newBalance = economy.getBalance(player);
+        try {
+            double rounded = DigitUtils.getPreciseValue(amount, 2);
+            economy.withdrawPlayer(player, rounded);
+            double newBalance = economy.getBalance(player);
 
-        MessageUtils.sendPlayerMessage(player, "<gold>$" + rounded +
-                " <red>was taken from your balance. You now have <green>$" + newBalance + ".");
+            MessageUtils.sendPlayerMessage(player, "<gold>$" + rounded +
+                    " <red>was taken from your balance. You now have <green>$" + newBalance + ".");
 
-        return true;
+            return true;
+
+        } catch (Exception e) {
+            ConsoleUtils.sendSevereMessage("An error occurred when trying to remove money from " + player.getName());
+            e.getMessage();
+            return false;
+        }
     }
 
     /**
@@ -132,6 +169,8 @@ public class VaultEconomy {
     public static Economy getEconomy() {
         return economy;
     }
+
+    public static VaultEconomy get() { return vaultEconomy; }
 
     private void disablePlugin() {
         vlib.getServer().getPluginManager().disablePlugin(vlib);

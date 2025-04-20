@@ -1,8 +1,7 @@
-package asia.virtualmc.vLibrary.integrations;
+package asia.virtualmc.vLibrary.integrations.vault;
 
 import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
-import asia.virtualmc.vLibrary.utilities.messages.MessageUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.milkbowl.vault.permission.Permission;
@@ -11,8 +10,10 @@ import org.jetbrains.annotations.NotNull;
 public class VaultPermissions {
     private final VLibrary vlib;
     private static Permission permission;
+    private static VaultPermissions vaultPermissions;
 
     public VaultPermissions(VLibrary vlib) {
+        vaultPermissions = this;
         this.vlib = vlib;
         initialize();
     }
@@ -41,24 +42,21 @@ public class VaultPermissions {
      *
      * @param player The player to add the permission to
      * @param permissionNode The permission node to add
-     * @return true if the permission was added successfully, false otherwise
      */
-    public boolean addPermission(@NotNull Player player, @NotNull String permissionNode) {
+    public void addPermission(@NotNull Player player, @NotNull String permissionNode) {
         if (permissionNode.isEmpty()) {
-            return false;
+            return;
         }
 
-        // Check if player already has the permission
         if (permission.playerHas(player, permissionNode)) {
-            return true;
+            ConsoleUtils.sendSevereMessage(player.getName() + " already has " + permissionNode + " permission!");
+            return;
         }
 
         boolean result = permission.playerAdd(player, permissionNode);
         if (result) {
-            MessageUtils.sendPlayerMessage(player, "You have been granted the permission: " + permissionNode);
+            ConsoleUtils.sendMessage("Added " + permissionNode + " to " + player.getName());
         }
-
-        return result;
     }
 
     /**
@@ -67,24 +65,23 @@ public class VaultPermissions {
      * @param player The player to add the permission to
      * @param world The world name where the permission applies
      * @param permissionNode The permission node to add
-     * @return true if the permission was added successfully, false otherwise
      */
-    public boolean addPermission(@NotNull Player player, @NotNull String world, @NotNull String permissionNode) {
+    public void addPermission(@NotNull Player player, @NotNull String world, @NotNull String permissionNode) {
         if (permissionNode.isEmpty() || world.isEmpty()) {
-            return false;
+            ConsoleUtils.sendSevereMessage("Invalid world name or permission node: " + world + ", " + permissionNode);
+            return;
         }
 
         // Check if player already has the permission in this world
         if (permission.playerHas(world, player, permissionNode)) {
-            return true;
+            ConsoleUtils.sendSevereMessage(player.getName() + " already has " + permissionNode + " permission!");
+            return;
         }
 
         boolean result = permission.playerAdd(world, player, permissionNode);
         if (result) {
-            MessageUtils.sendPlayerMessage(player, "You have been granted the permission: " + permissionNode + " in world: " + world);
+            ConsoleUtils.sendMessage("Added " + permissionNode + " to " + player.getName() + " with world parameter: " + world);
         }
-
-        return result;
     }
 
     /**
@@ -92,24 +89,23 @@ public class VaultPermissions {
      *
      * @param player The player to remove the permission from
      * @param permissionNode The permission node to remove
-     * @return true if the permission was removed successfully, false otherwise
      */
-    public boolean removePermission(@NotNull Player player, @NotNull String permissionNode) {
+    public void removePermission(@NotNull Player player, @NotNull String permissionNode) {
         if (permissionNode.isEmpty()) {
-            return false;
+            ConsoleUtils.sendSevereMessage("Invalid permission node: " + permissionNode);
+            return;
         }
 
         // Check if player even has the permission
         if (!permission.playerHas(player, permissionNode)) {
-            return true;
+            ConsoleUtils.sendSevereMessage(player.getName() + " does not have " + permissionNode + " permission!");
+            return;
         }
 
         boolean result = permission.playerRemove(player, permissionNode);
         if (result) {
-            MessageUtils.sendPlayerMessage(player, "The permission has been removed: " + permissionNode);
+            ConsoleUtils.sendMessage("Removed " + permissionNode + " from " + player.getName());
         }
-
-        return result;
     }
 
     /**
@@ -118,24 +114,23 @@ public class VaultPermissions {
      * @param player The player to remove the permission from
      * @param world The world name where the permission applies
      * @param permissionNode The permission node to remove
-     * @return true if the permission was removed successfully, false otherwise
      */
-    public boolean removePermission(@NotNull Player player, @NotNull String world, @NotNull String permissionNode) {
+    public void removePermission(@NotNull Player player, @NotNull String world, @NotNull String permissionNode) {
         if (permissionNode.isEmpty() || world.isEmpty()) {
-            return false;
+            ConsoleUtils.sendSevereMessage("Invalid world name or permission node: " + world + ", " + permissionNode);
+            return;
         }
 
         // Check if player even has the permission in this world
         if (!permission.playerHas(world, player, permissionNode)) {
-            return true;
+            ConsoleUtils.sendSevereMessage(player.getName() + " does not have " + permissionNode + " permission!");
+            return;
         }
 
         boolean result = permission.playerRemove(world, player, permissionNode);
         if (result) {
-            MessageUtils.sendPlayerMessage(player, "The permission has been removed: " + permissionNode + " in world: " + world);
+            ConsoleUtils.sendMessage("Removed " + permissionNode + " from " + player.getName() + " with world parameter: " + world);
         }
-
-        return result;
     }
 
     /**
@@ -145,7 +140,7 @@ public class VaultPermissions {
      * @param permissionNode The permission node to check
      * @return true if the player has the permission, false otherwise
      */
-    public boolean checkPermission(@NotNull Player player, @NotNull String permissionNode) {
+    public boolean hasPermission(@NotNull Player player, @NotNull String permissionNode) {
         if (permissionNode.isEmpty()) {
             return false;
         }
@@ -161,7 +156,7 @@ public class VaultPermissions {
      * @param permissionNode The permission node to check
      * @return true if the player has the permission in the specified world, false otherwise
      */
-    public boolean checkPermission(@NotNull Player player, @NotNull String world, @NotNull String permissionNode) {
+    public boolean hasPermission(@NotNull Player player, @NotNull String world, @NotNull String permissionNode) {
         if (permissionNode.isEmpty() || world.isEmpty()) {
             return false;
         }
@@ -172,6 +167,8 @@ public class VaultPermissions {
     public static Permission getPermission() {
         return permission;
     }
+
+    public static VaultPermissions get() { return vaultPermissions; }
 
     private void disablePlugin() {
         vlib.getServer().getPluginManager().disablePlugin(vlib);

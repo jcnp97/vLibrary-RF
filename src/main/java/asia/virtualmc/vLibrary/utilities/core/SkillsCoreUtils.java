@@ -4,6 +4,7 @@ import asia.virtualmc.vLibrary.enums.EnumsLib;
 import asia.virtualmc.vLibrary.utilities.messages.MessageUtils;
 import asia.virtualmc.vLibrary.utilities.minecraft.EffectUtils;
 import asia.virtualmc.vLibrary.utilities.minecraft.SoundUtils;
+import asia.virtualmc.vLibrary.utilities.text.DigitUtils;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +43,7 @@ public class SkillsCoreUtils {
     public double getNewEXP(@NotNull EnumsLib.UpdateType type, double currentEXP, double value) {
         if (value <= 0) return currentEXP;
 
-        value = DigitUtils.roundToPrecision(value, 2);
+        value = DigitUtils.getPreciseValue(value, 2);
         switch (type) {
             case ADD -> { return Math.min(MAX_EXP, currentEXP + value); }
             case SUBTRACT -> { return Math.max(0, currentEXP - value); }
@@ -65,7 +66,7 @@ public class SkillsCoreUtils {
     public double getNewXPM(@NotNull EnumsLib.UpdateType type, double currentXPM, double value) {
         if (value < 0) return currentXPM;
 
-        value = DigitUtils.roundToPrecision(value, 2);
+        value = DigitUtils.getPreciseValue(value, 2);
         switch (type) {
             case ADD -> { return currentXPM + value; }
             case SUBTRACT -> { return Math.max(0, currentXPM - value); }
@@ -77,7 +78,7 @@ public class SkillsCoreUtils {
     public double getNewBXP(@NotNull EnumsLib.UpdateType type, double currentBXP, double value) {
         if (value <= 0) return currentBXP;
 
-        value = DigitUtils.roundToPrecision(value, 2);
+        value = DigitUtils.getPreciseValue(value, 2);
         switch (type) {
             case ADD -> { return currentBXP + value; }
             case SUBTRACT -> { return Math.max(0, currentBXP - value); }

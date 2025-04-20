@@ -1,9 +1,6 @@
 package asia.virtualmc.vLibrary.utilities.files;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.bukkit.plugin.Plugin;
 
 import java.io.*;
@@ -260,5 +257,93 @@ public class JSONUtils {
         }
 
         return Collections.emptySet();
+    }
+
+    public static void addStringData(Plugin plugin, String value, String PATH_FILE) {
+        File file = new File(plugin.getDataFolder(), PATH_FILE);
+        JsonArray array = new JsonArray();
+
+        // If file exists and is non‐empty, parse existing array
+        if (file.exists() && file.length() > 0) {
+            try (FileReader reader = new FileReader(file)) {
+                array = JsonParser.parseReader(reader).getAsJsonArray();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        // Append new value and write back
+        array.add(value);
+        try (FileWriter writer = new FileWriter(file)) {
+            gson.toJson(array, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Set<String> getAllStringData(Plugin plugin, String PATH_FILE) {
+        File file = new File(plugin.getDataFolder(), PATH_FILE);
+        Set<String> result = new HashSet<>();
+
+        if (!file.exists() || file.length() == 0) {
+            return result;
+        }
+
+        try (FileReader reader = new FileReader(file)) {
+            JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
+            for (JsonElement elem : array) {
+                if (elem.isJsonPrimitive() && elem.getAsJsonPrimitive().isString()) {
+                    result.add(elem.getAsString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static void clearStringDuplicates(Plugin plugin, String PATH_FILE) {
+        Set<String> unique = getAllStringData(plugin, PATH_FILE);
+        JsonArray array = new JsonArray();
+        unique.forEach(array::add);
+
+        try (FileWriter writer = new FileWriter(new File(PATH_FILE))) {
+            gson.toJson(array, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteStringData(Plugin plugin, String value, String PATH_FILE) {
+        File file = new File(plugin.getDataFolder(), PATH_FILE);
+        if (!file.exists() || file.length() == 0) return;
+
+        JsonArray array;
+        try (FileReader reader = new FileReader(file)) {
+            array = JsonParser.parseReader(reader).getAsJsonArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        boolean modified = false;
+        Iterator<JsonElement> iter = array.iterator();
+        while (iter.hasNext()) {
+            JsonElement elem = iter.next();
+            if (elem.isJsonPrimitive() && elem.getAsString().equals(value)) {
+                iter.remove();
+                modified = true;
+            }
+        }
+
+        if (!modified) return;
+
+        try (FileWriter writer = new FileWriter(file)) {
+            gson.toJson(array, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

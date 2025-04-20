@@ -1,4 +1,4 @@
-package asia.virtualmc.vLibrary.integrations;
+package asia.virtualmc.vLibrary.integrations.packet_events;
 
 import com.github.retrooper.packetevents.protocol.component.ComponentTypes;
 import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemCustomModelData;

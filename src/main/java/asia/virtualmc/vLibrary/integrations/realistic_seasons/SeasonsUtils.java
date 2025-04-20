@@ -1,4 +1,4 @@
-package asia.virtualmc.vLibrary.integrations;
+package asia.virtualmc.vLibrary.integrations.realistic_seasons;
 
 import asia.virtualmc.vLibrary.VLibrary;
 import me.casperge.realisticseasons.api.SeasonsAPI;

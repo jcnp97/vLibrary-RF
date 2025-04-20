@@ -12,24 +12,6 @@ import java.io.InputStream;
 
 public class YAMLUtils {
 
-//    public static YamlDocument getYamlDocument(@NotNull Plugin plugin, @NotNull String PATH_FILE) {
-//        File file = new File(plugin.getDataFolder(), PATH_FILE);
-//
-//        if (!file.exists()) {
-//            plugin.getLogger().severe("File " + file.getAbsolutePath() + " does not exist!");
-//            return null;
-//        }
-//
-//        try {
-//            return YamlDocument.create(file);
-//        } catch (IOException e) {
-//            plugin.getLogger().severe("An error occurred when trying to read " + file.getAbsolutePath());
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
-
     public static YamlDocument getYamlDocument(@NotNull Plugin plugin, @NotNull String FILE_NAME) {
         File file = new File(plugin.getDataFolder(), FILE_NAME);
 
