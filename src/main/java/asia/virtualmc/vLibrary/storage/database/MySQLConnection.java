@@ -5,24 +5,19 @@ import asia.virtualmc.vLibrary.utilities.files.YAMLUtils;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.jetbrains.annotations.NotNull;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class MySQLConnection {
-    private final VLibrary vlib;
     private static HikariDataSource hikariDataSource;
-    private Database database;
+    private static Database database;
     private record Database(String host, int port, String dbName, String user, String password) {}
 
-    public MySQLConnection(@NotNull VLibrary vlib) {
-        this.vlib = vlib;
-        initialize();
-    }
-
-    private void initialize() {
+    public static void initialize(@NotNull Plugin plugin) {
         getConfig();
 
         try {
@@ -43,20 +38,22 @@ public class MySQLConnection {
 
             try (Connection connection = hikariDataSource.getConnection()) {
                 if (connection != null && !connection.isClosed()) {
-                    ConsoleUtils.sendMessage("Successfully connected to the MySQL database.");
+                    ConsoleUtils.info("Successfully connected to the MySQL database.");
                 }
             }
         } catch (SQLException e) {
-            vlib.getLogger().severe("Failed to connect to database: " + e.getMessage());
+            ConsoleUtils.severe("Failed to connect to database: " + e.getMessage());
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
         } catch (Exception e) {
-            vlib.getLogger().severe("Error during database setup: " + e.getMessage());
+            ConsoleUtils.severe("Error during database setup: " + e.getMessage());
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
     }
 
-    private void getConfig() {
-        Section section = YAMLUtils.getFileSection(vlib, "database.yml", "mysql");
+    private static void getConfig() {
+        Section section = YAMLUtils.getFileSection(VLibrary.getInstance(), "database.yml", "mysql");
         if (section == null) {
-            vlib.getLogger().severe("Couldn't find/read database.yml!");
+            ConsoleUtils.severe("Couldn't find/read database.yml!");
             return;
         }
 
@@ -67,9 +64,9 @@ public class MySQLConnection {
             String user = section.getString("username", "root");
             String pass = section.getString("password", "");
 
-            this.database = new Database(host, port, dbName, user, pass);
+            database = new Database(host, port, dbName, user, pass);
         } catch (Exception e) {
-            vlib.getLogger().severe("Error during database setup: " + e.getMessage());
+            ConsoleUtils.severe("Error during database setup: " + e.getMessage());
         }
     }
 

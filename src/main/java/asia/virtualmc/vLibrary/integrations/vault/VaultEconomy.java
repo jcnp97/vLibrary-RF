@@ -23,21 +23,21 @@ public class VaultEconomy {
 
     private void initialize() {
         if (vlib.getServer().getPluginManager().getPlugin("Vault") == null) {
-            vlib.getLogger().severe("Vault plugin not found! Disabling vLibrary..");
+            ConsoleUtils.severe("Vault plugin not found! Disabling vLibrary..");
             disablePlugin();
         }
 
-        ConsoleUtils.sendMessage("Vault found! Attempting to get economy registration..");
+        ConsoleUtils.warning("Vault found! Attempting to get economy registration..");
         RegisteredServiceProvider<Economy> rspEconomy = vlib.getServer().getServicesManager().getRegistration(Economy.class);
 
         if (rspEconomy == null) {
-            vlib.getLogger().severe("No economy provider was registered with Vault!");
+            ConsoleUtils.severe("No economy provider was registered with Vault!");
             disablePlugin();
         }
 
         assert rspEconomy != null;
         economy = rspEconomy.getProvider();
-        ConsoleUtils.sendMessage("Successfully hooked into: " + economy.getName());
+        ConsoleUtils.info("Successfully hooked into: " + economy.getName());
     }
 
 //    /**
@@ -82,7 +82,7 @@ public class VaultEconomy {
             return true;
 
         } catch (Exception e) {
-            ConsoleUtils.sendSevereMessage("An error occurred when trying to remove money from " + player.getName());
+            ConsoleUtils.severe("An error occurred when trying to remove money from " + player.getName());
             e.getMessage();
             return false;
         }
@@ -115,7 +115,7 @@ public class VaultEconomy {
             return true;
 
         } catch (Exception e) {
-            ConsoleUtils.sendSevereMessage("An error occurred when trying to remove money from " + player.getName());
+            ConsoleUtils.severe("An error occurred when trying to remove money from " + player.getName());
             e.getMessage();
             return false;
         }

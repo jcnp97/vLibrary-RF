@@ -1,8 +1,0 @@
-# If you want to implement Network-wide data sync, enable this.
-# For example, if you want Server 1 and Server 2 to share the same data,
-# Set enable to TRUE and add Redis configurations.
-redis:
-  enable: false
-  host: host
-  port: 6379
-  password: password

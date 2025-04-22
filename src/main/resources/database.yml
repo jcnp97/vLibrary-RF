@@ -2,8 +2,6 @@
 # This plugin requires MySQL Database.
 # Most server providers provide at least (1) free database, ask them to provide you one.
 # --------------------------------------------------------------------------------------
-# WARNING! If you use this plugin on multiple servers and connects to the same database,
-# it can cause data corruption. Enable redis (from redis.yml) to avoid this!
 mysql:
   host: localhost
   port: 3306

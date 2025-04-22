@@ -2,25 +2,36 @@ package asia.virtualmc.vLibrary.utilities.messages;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 
 public class ConsoleUtils {
-    private static final String prefix = "<#8BFFA9>[vLibrary] ";
 
-    public static void sendMessage(String string) {
+    public static void info(String message) {
         CommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(AdventureUtils.convertToComponent("<green>" + prefix + string));
+        console.sendMessage(AdventureUtils.convertToComponent("<green>[vLibrary] " + message));
     }
 
-    public static void sendSevereMessage(String string) {
+    public static void warning(String message) {
         CommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(AdventureUtils.convertToComponent("<red>" + prefix + string));
+        console.sendMessage(AdventureUtils.convertToComponent("<yellow>[vLibrary] " + message));
     }
 
-    public static void sendMessage(@NotNull Plugin plugin, String string) {
-        String prefix = "<#8BFFA9>[" + plugin.getName() + "]";
+    public static void severe(String message) {
         CommandSender console = Bukkit.getConsoleSender();
-        console.sendMessage(AdventureUtils.convertToComponent(prefix + string));
+        console.sendMessage(AdventureUtils.convertToComponent("<red>[vLibrary] " + message));
+    }
+
+    public static void info(String pluginPrefix, String message) {
+        CommandSender console = Bukkit.getConsoleSender();
+        console.sendMessage(AdventureUtils.convertToComponent(pluginPrefix + "<green>" + message));
+    }
+
+    public static void warning(String pluginPrefix, String message) {
+        CommandSender console = Bukkit.getConsoleSender();
+        console.sendMessage(AdventureUtils.convertToComponent(pluginPrefix + "<yellow>" + message));
+    }
+
+    public static void severe(String pluginPrefix, String message) {
+        CommandSender console = Bukkit.getConsoleSender();
+        console.sendMessage(AdventureUtils.convertToComponent(pluginPrefix + "<red>" + message));
     }
 }
