@@ -60,7 +60,7 @@ public class MySQLConnection {
         try {
             String host = section.getString("host", "localhost");
             int port = section.getInt("port", 3306);
-            String dbName = section.getString("host", "minecraft");
+            String dbName = section.getString("database", "minecraft");
             String user = section.getString("username", "root");
             String pass = section.getString("password", "");
 

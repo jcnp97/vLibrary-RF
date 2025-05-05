@@ -1,8 +1,10 @@
 package asia.virtualmc.vLibrary.utilities.messages;
 
+import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.enums.EnumsLib;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import org.bukkit.entity.Player;
 
 public class BossbarUtils {
 
@@ -36,5 +38,12 @@ public class BossbarUtils {
 
         bossBar.name(component);
         bossBar.progress(progressLimit);
+    }
+
+    public static void showBossBar(Player player, BossBar bossBar, double duration) {
+        player.showBossBar(bossBar);
+        player.getServer().getScheduler().runTaskLater(VLibrary.getInstance(), task -> {
+            player.hideBossBar(bossBar);
+        }, (long) (duration * 20L));
     }
 }

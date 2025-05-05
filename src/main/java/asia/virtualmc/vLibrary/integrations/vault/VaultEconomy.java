@@ -74,7 +74,7 @@ public class VaultEconomy {
         }
 
         try {
-            double rounded = DigitUtils.getPreciseValue(amount, 2);
+            double rounded = DigitUtils.precise(amount, 2);
             economy.depositPlayer(player, rounded);
             double newBalance = economy.getBalance(player);
             MessageUtils.sendPlayerMessage(player, "You have received $" + rounded + ". You now have $" + newBalance + ".", EnumsLib.MessageType.GREEN);
@@ -105,7 +105,7 @@ public class VaultEconomy {
         }
 
         try {
-            double rounded = DigitUtils.getPreciseValue(amount, 2);
+            double rounded = DigitUtils.precise(amount, 2);
             economy.withdrawPlayer(player, rounded);
             double newBalance = economy.getBalance(player);
 

@@ -27,7 +27,7 @@ public class DecorationUtils {
      * @return the converted long value
      */
     public static Long convertToLong(double value) {
-        double formatDouble = DigitUtils.getPreciseValue(value, 2);
+        double formatDouble = DigitUtils.precise(value, 2);
         return (long) (formatDouble * 100);
     }
 

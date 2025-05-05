@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class InventoryUtils {
 
@@ -125,5 +126,21 @@ public class InventoryUtils {
             }
         }
         return true;
+    }
+
+    public static Map<Integer, ItemStack> createSnapshot(@NotNull Player player,
+                                                         Predicate<ItemStack> condition) {
+
+        Map<Integer, ItemStack> snapshot = new HashMap<>();
+        for (int i = 0; i < 36; i++) {
+            ItemStack item = player.getInventory().getItem(i);
+            if (item == null) continue;
+
+            if (condition.test(item)) {
+                snapshot.put(i, item.clone());
+            }
+        }
+
+        return snapshot;
     }
 }

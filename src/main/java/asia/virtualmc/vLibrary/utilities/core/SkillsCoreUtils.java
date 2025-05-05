@@ -13,7 +13,7 @@ public class SkillsCoreUtils {
     private static final int MAX_LEVEL = 120;
     private static final int MAX_EXP = 2_147_483_647;
 
-    public void levelingEffects(@NotNull Player player, String skillName,
+    public static void levelingEffects(@NotNull Player player, String skillName,
                                 int previousLevel, int newLevel, int traitPoints) {
 
         String command = "";
@@ -40,10 +40,10 @@ public class SkillsCoreUtils {
         }
     }
 
-    public double getNewEXP(@NotNull EnumsLib.UpdateType type, double currentEXP, double value) {
+    public static double getEXP(@NotNull EnumsLib.UpdateType type, double currentEXP, double value) {
         if (value <= 0) return currentEXP;
 
-        value = DigitUtils.getPreciseValue(value, 2);
+        value = DigitUtils.precise(value, 2);
         switch (type) {
             case ADD -> { return Math.min(MAX_EXP, currentEXP + value); }
             case SUBTRACT -> { return Math.max(0, currentEXP - value); }
@@ -52,7 +52,7 @@ public class SkillsCoreUtils {
         }
     }
 
-    public int getNewLevel(@NotNull EnumsLib.UpdateType type, int currentLevel, int value) {
+    public static int getLevel(@NotNull EnumsLib.UpdateType type, int currentLevel, int value) {
         if (value <= 0) return currentLevel;
 
         switch (type) {
@@ -63,10 +63,10 @@ public class SkillsCoreUtils {
         }
     }
 
-    public double getNewXPM(@NotNull EnumsLib.UpdateType type, double currentXPM, double value) {
+    public static double getXPM(@NotNull EnumsLib.UpdateType type, double currentXPM, double value) {
         if (value < 0) return currentXPM;
 
-        value = DigitUtils.getPreciseValue(value, 2);
+        value = DigitUtils.precise(value, 2);
         switch (type) {
             case ADD -> { return currentXPM + value; }
             case SUBTRACT -> { return Math.max(0, currentXPM - value); }
@@ -75,10 +75,10 @@ public class SkillsCoreUtils {
         }
     }
 
-    public double getNewBXP(@NotNull EnumsLib.UpdateType type, double currentBXP, double value) {
+    public static double getBXP(@NotNull EnumsLib.UpdateType type, double currentBXP, double value) {
         if (value <= 0) return currentBXP;
 
-        value = DigitUtils.getPreciseValue(value, 2);
+        value = DigitUtils.precise(value, 2);
         switch (type) {
             case ADD -> { return currentBXP + value; }
             case SUBTRACT -> { return Math.max(0, currentBXP - value); }
@@ -87,7 +87,7 @@ public class SkillsCoreUtils {
         }
     }
 
-    public int getNewTraitPoints(@NotNull EnumsLib.UpdateType type, int currentTP, int value) {
+    public static int getTraitPoints(@NotNull EnumsLib.UpdateType type, int currentTP, int value) {
         if (value <= 0) return currentTP;
 
         switch (type) {
@@ -98,7 +98,7 @@ public class SkillsCoreUtils {
         }
     }
 
-    public int getNewTalentPoints(@NotNull EnumsLib.UpdateType type, int currentTP, int value) {
+    public static int getTalentPoints(@NotNull EnumsLib.UpdateType type, int currentTP, int value) {
         if (value <= 0) return currentTP;
 
         switch (type) {
@@ -109,7 +109,7 @@ public class SkillsCoreUtils {
         }
     }
 
-    public int getNewLuck(@NotNull EnumsLib.UpdateType type, int luck, int value) {
+    public static int getLuck(@NotNull EnumsLib.UpdateType type, int luck, int value) {
         if (value <= 0) return luck;
 
         switch (type) {

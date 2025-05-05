@@ -1,5 +1,9 @@
 package asia.virtualmc.vLibrary.utilities.core;
 
+import asia.virtualmc.vLibrary.VLibrary;
+import asia.virtualmc.vLibrary.enums.EnumsLib;
+import asia.virtualmc.vLibrary.helpers.AsyncUtils;
+import asia.virtualmc.vLibrary.utilities.messages.BossbarUtils;
 import asia.virtualmc.vLibrary.utilities.text.DigitUtils;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
@@ -10,6 +14,47 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class EXPDisplayUtils {
+
+    public static String getEXPMessage(String skillName,
+                                       int currentLevel,
+                                       double addedEXP,
+                                       float progress) {
+
+        String percentage = DigitUtils.format(Math.min(100.0, (progress) * 100.0)) + "%";
+        if (currentLevel >= 120) {
+            percentage = "0.0%";
+        }
+
+        String hourlyExp = DigitUtils.format(addedEXP * 240);
+
+        return "<white>" + skillName + " Lv. " + currentLevel + " <gray>(<yellow>" + percentage + "<gray>) | <green>+ "
+                + addedEXP + " XP <gray>| <red>" + hourlyExp + " XP/HR";
+    }
+
+    public static void buildEXPBossBar(Player player,
+                                       String skillName,
+                                       double currentEXP,
+                                       int currentLevel,
+                                       int nextLevelEXP,
+                                       double addedEXP) {
+
+        AsyncUtils.runAsyncThenSync(VLibrary.getInstance(),
+                () -> {
+                    float progress = Math.max(0.0f, Math.min(1.0f, (float) currentEXP / nextLevelEXP));
+                    String message = getEXPMessage(skillName, currentLevel, addedEXP, progress);
+                    return new Object[] { progress, message };
+                },
+                result -> {
+                    float progress = (float) result[0];
+                    String message = (String) result[1];
+
+                    BossBar bossBar = BossbarUtils.getBossBar(message, EnumsLib.BossBarColor.GREEN, progress);
+                    if (player != null) {
+                        BossbarUtils.showBossBar(player, bossBar, 5.0);
+                    }
+                }
+        );
+    }
 
     /**
      * Displays a temporary boss bar to the player showing EXP progress toward the next level.
@@ -36,8 +81,8 @@ public class EXPDisplayUtils {
         }
 
         float progress = (float) currentExp / Math.max(nextLevelExp, 1);
-        double hourlyExp = DigitUtils.getPreciseValue(addedExp * 240, 2);
-        String percentProgress = DigitUtils.getFormatted(Math.min(100.0, progress * 100.0));
+        double hourlyExp = DigitUtils.precise(addedExp * 240, 2);
+        String percentProgress = DigitUtils.format(Math.min(100.0, progress * 100.0));
 
         Component bossBarText = Component.text()
                 .append(Component.text(skillName + " Lv. " + currentLevel, NamedTextColor.WHITE))
@@ -46,7 +91,7 @@ public class EXPDisplayUtils {
                 .append(Component.text(" | ", NamedTextColor.GRAY))
                 .append(Component.text("+" + addedExp + " EXP", NamedTextColor.GREEN))
                 .append(Component.text(" | ", NamedTextColor.GRAY))
-                .append(Component.text(DigitUtils.getFormatted(hourlyExp) + " XP/HR", NamedTextColor.RED))
+                .append(Component.text(DigitUtils.format(hourlyExp) + " XP/HR", NamedTextColor.RED))
                 .build();
 
         BossBar bossBar = BossBar.bossBar(
@@ -78,8 +123,8 @@ public class EXPDisplayUtils {
                                            double addedExp,
                                            int currentLevel) {
 
-        double hourlyExp = DigitUtils.getPreciseValue(addedExp * 240, 2);
-        String formattedEXP = DigitUtils.getFormatted(currentExp / 1000000);
+        double hourlyExp = DigitUtils.precise(addedExp * 240, 2);
+        String formattedEXP = DigitUtils.format(currentExp / 1000000);
 
         Component bossBarText = Component.text()
                 .append(Component.text(skillName + " Lv. " + currentLevel, NamedTextColor.WHITE))
@@ -88,7 +133,7 @@ public class EXPDisplayUtils {
                 .append(Component.text(" | ", NamedTextColor.GRAY))
                 .append(Component.text("+" + addedExp + " EXP", NamedTextColor.GREEN))
                 .append(Component.text(" | ", NamedTextColor.GRAY))
-                .append(Component.text(DigitUtils.getFormatted(hourlyExp) + " XP/HR", NamedTextColor.RED))
+                .append(Component.text(DigitUtils.format(hourlyExp) + " XP/HR", NamedTextColor.RED))
                 .build();
 
         BossBar bossBar = BossBar.bossBar(
@@ -128,15 +173,15 @@ public class EXPDisplayUtils {
         if (bonusXP > 0) {
             Component actionBarText = Component.text()
                     .append(Component.text("+" + expGain + " EXP (+" + bonusXP + " Bonus EXP) ", NamedTextColor.GREEN))
-                    .append(Component.text("(" + DigitUtils.getFormatted(currentExp) + "K", NamedTextColor.GRAY))
-                    .append(Component.text("/" + DigitUtils.getFormatted(nextLevelExp) + "K EXP)", NamedTextColor.GRAY))
+                    .append(Component.text("(" + DigitUtils.format(currentExp) + "K", NamedTextColor.GRAY))
+                    .append(Component.text("/" + DigitUtils.format(nextLevelExp) + "K EXP)", NamedTextColor.GRAY))
                     .build();
             player.sendActionBar(actionBarText);
         } else {
             Component actionBarText = Component.text()
                     .append(Component.text("+" + expGain + " EXP ", NamedTextColor.GREEN))
-                    .append(Component.text("(" + DigitUtils.getFormatted(currentExp) + "K", NamedTextColor.GRAY))
-                    .append(Component.text("/" + DigitUtils.getFormatted(nextLevelExp) + "K EXP)", NamedTextColor.GRAY))
+                    .append(Component.text("(" + DigitUtils.format(currentExp) + "K", NamedTextColor.GRAY))
+                    .append(Component.text("/" + DigitUtils.format(nextLevelExp) + "K EXP)", NamedTextColor.GRAY))
                     .build();
             player.sendActionBar(actionBarText);
         }
@@ -160,13 +205,13 @@ public class EXPDisplayUtils {
         if (bonusXP > 0) {
             Component actionBarText = Component.text()
                     .append(Component.text("+" + expGain + " EXP (+" + bonusXP + " Bonus EXP) ", NamedTextColor.GREEN))
-                    .append(Component.text("(" + DigitUtils.getFormatted(currentExp) + " M", NamedTextColor.GRAY))
+                    .append(Component.text("(" + DigitUtils.format(currentExp) + " M", NamedTextColor.GRAY))
                     .build();
             player.sendActionBar(actionBarText);
         } else {
             Component actionBarText = Component.text()
                     .append(Component.text("+" + expGain + " EXP ", NamedTextColor.GREEN))
-                    .append(Component.text("(" + DigitUtils.getFormatted(currentExp) + " M)", NamedTextColor.GRAY))
+                    .append(Component.text("(" + DigitUtils.format(currentExp) + " M)", NamedTextColor.GRAY))
                     .build();
             player.sendActionBar(actionBarText);
         }

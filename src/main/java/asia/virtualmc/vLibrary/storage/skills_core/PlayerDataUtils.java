@@ -276,7 +276,7 @@ public class PlayerDataUtils {
      *         if data cannot be loaded or created.
      */
     @NotNull
-    public PlayerStats loadPlayerData(@NotNull UUID uuid, String tablePrefix, String prefix) {
+    public static PlayerStats loadPlayerData(@NotNull UUID uuid, String tablePrefix, String prefix) {
         Integer playerID = PlayerIDUtils.getPlayerID(uuid);
 
         String selectQuery = "SELECT * FROM " + tablePrefix + "_playerData WHERE playerID = ?";
@@ -304,9 +304,7 @@ public class PlayerDataUtils {
             }
 
             // If no record is found, create one and try again.
-            OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-            String playerName = (player.getName() != null) ? player.getName() : "Unknown";
-            createNewPlayerData(uuid, playerName, tablePrefix, prefix);
+            createNewPlayerData(uuid, "Unknown", tablePrefix, prefix);
 
             // Try loading again.
             try (ResultSet rs = ps.executeQuery()) {

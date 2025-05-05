@@ -1,6 +1,5 @@
 package asia.virtualmc.vLibrary.storage.database;
 
-import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,17 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PlayerIDUtils {
     private static final ConcurrentHashMap<UUID, Integer> playerIDMap = new ConcurrentHashMap<>();
 
-    public PlayerIDUtils(@NotNull VLibrary vlib) {
-        createTable();
-    }
-
-    private void createTable() {
+    public static void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS vlib_players (" +
                 "playerID INT NOT NULL AUTO_INCREMENT, " +
                 "uuid CHAR(36) NOT NULL, " +
                 "PRIMARY KEY (playerID), " +
                 "UNIQUE KEY (uuid)" +
                 ")";
+
         try (Connection connection = MySQLConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.executeUpdate();

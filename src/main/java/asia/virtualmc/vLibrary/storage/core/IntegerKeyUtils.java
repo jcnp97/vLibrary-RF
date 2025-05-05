@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class IntegerDataUtils {
+public class IntegerKeyUtils {
 
     /**
      * Creates the necessary tables for storing stat definitions and player-specific stat data.
@@ -61,7 +61,7 @@ public class IntegerDataUtils {
                 insertStmt.executeBatch();
             }
         } catch (SQLException e) {
-            ConsoleUtils.severe(prefix + "Failed to create " + tableName + " tables: " + e.getMessage());
+            ConsoleUtils.severe(prefix, "Failed to create " + tableName + " tables: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -77,7 +77,7 @@ public class IntegerDataUtils {
     public static void savePlayerData(@NotNull UUID uuid, @NotNull String tableName,
                                       @NotNull Map<Integer, Integer> playerData, String prefix) {
         if (playerData.isEmpty()) {
-            ConsoleUtils.warning(prefix + "Attempted to update data for player " +
+            ConsoleUtils.warning(prefix, "Attempted to update data for player " +
                     uuid + " but the provided data map is empty.");
             return;
         }
@@ -103,7 +103,7 @@ public class IntegerDataUtils {
                 throw e;
             }
         } catch (SQLException e) {
-            ConsoleUtils.severe(prefix + "Failed to update data on " + tableName + " for player " +
+            ConsoleUtils.severe(prefix, "Failed to update data on " + tableName + " for player " +
                     uuid + ": " + e.getMessage());
         }
     }
@@ -139,7 +139,7 @@ public class IntegerDataUtils {
             }
 
         } catch (SQLException e) {
-            ConsoleUtils.severe(prefix +
+            ConsoleUtils.severe(prefix,
                     "Failed to save all data for " + tableName + ": " + e.getMessage());
         }
     }
@@ -173,7 +173,7 @@ public class IntegerDataUtils {
                 throw e;
             }
         } catch (SQLException e) {
-            ConsoleUtils.severe(prefix + "Failed to create new player data on " + tableName +
+            ConsoleUtils.severe(prefix, "Failed to create new player data on " + tableName +
                     " for " + uuid + ": " + e.getMessage());
         }
     }
@@ -223,7 +223,7 @@ public class IntegerDataUtils {
                 }
             }
         } catch (SQLException e) {
-            ConsoleUtils.severe(prefix + "Failed to load data from " + tableName + " for player " +
+            ConsoleUtils.severe(prefix, "Failed to load data from " + tableName + " for player " +
                     uuid + ": " + e.getMessage());
         }
 
