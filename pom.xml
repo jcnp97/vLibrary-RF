@@ -67,7 +67,18 @@
                                     <shadedPattern>asia.virtualmc.vLibrary.libs.boostedyaml</shadedPattern>
                                 </relocation>
 
+                                <!-- SQLite relocation -->
+                                <relocation>
+                                    <pattern>org.xerial</pattern>
+                                    <shadedPattern>asia.virtualmc.vLibrary.libs.sqlite</shadedPattern>
+                                </relocation>
                             </relocations>
+
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>META-INF/services/java.sql.Driver</resource>
+                                </transformer>
+                            </transformers>
 
                             <filters>
                                 <filter>
@@ -310,6 +321,13 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>5.2.0</version>
+        </dependency>
+
+        <!-- SQLite -->
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.49.1.0</version>
         </dependency>
     </dependencies>
 </project>

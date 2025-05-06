@@ -1,10 +1,7 @@
 package asia.virtualmc.vLibrary.integrations.nexo;
 
-import com.nexomc.nexo.api.NexoFurniture;
 import com.nexomc.nexo.api.NexoItems;
 import com.nexomc.nexo.items.ItemBuilder;
-import com.nexomc.nexo.mechanics.furniture.FurnitureMechanic;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class NexoUtils {

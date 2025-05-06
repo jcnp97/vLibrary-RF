@@ -109,7 +109,29 @@ public class JSONUtils {
         }
     }
 
-    public static long getValue(Plugin plugin, String FILE_PATH, String KEY) {
+    public static double getDoubleValue(Plugin plugin, String relativePath, String key) {
+        File file = new File(plugin.getDataFolder(), relativePath);
+
+        if (!file.exists() || file.length() == 0) {
+            plugin.getLogger().warning("JSON file does not exist or is empty: " + relativePath);
+            return 0.0;
+        }
+
+        try (FileReader reader = new FileReader(file)) {
+            JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+            if (jsonObject.has(key) && jsonObject.get(key).isJsonPrimitive() && jsonObject.get(key).getAsJsonPrimitive().isNumber()) {
+                return jsonObject.get(key).getAsDouble();
+            } else {
+                plugin.getLogger().warning("Key not found or not a number: " + key);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Failed to read JSON: " + e.getMessage());
+        }
+
+        return 0.0;
+    }
+
+    public static long getLongValue(Plugin plugin, String FILE_PATH, String KEY) {
         File file = new File(plugin.getDataFolder(), FILE_PATH);
 
         if (!file.exists() || file.length() == 0) {

@@ -52,7 +52,7 @@ public class TexturePathReplacer {
                         OLD_PATH, NEW_PATH);
             }
         } catch (Exception e) {
-            vlib.getLogger().severe("An error occurred when trying to modify .json files!");
+            vlib.getLogger().severe("An error occurred when trying to modify .json files: " + e.getMessage());
         }
 
         vlib.getLogger().info("§aSuccessfully modified all .json files.");
