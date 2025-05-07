@@ -67,18 +67,18 @@
                                     <shadedPattern>asia.virtualmc.vLibrary.libs.boostedyaml</shadedPattern>
                                 </relocation>
 
-                                <!-- SQLite relocation -->
-                                <relocation>
-                                    <pattern>org.xerial</pattern>
-                                    <shadedPattern>asia.virtualmc.vLibrary.libs.sqlite</shadedPattern>
-                                </relocation>
+<!--                                &lt;!&ndash; SQLite relocation &ndash;&gt;-->
+<!--                                <relocation>-->
+<!--                                    <pattern>org.xerial</pattern>-->
+<!--                                    <shadedPattern>asia.virtualmc.vLibrary.libs.sqlite</shadedPattern>-->
+<!--                                </relocation>-->
                             </relocations>
 
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                                    <resource>META-INF/services/java.sql.Driver</resource>
-                                </transformer>
-                            </transformers>
+<!--                            <transformers>-->
+<!--                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">-->
+<!--                                    <resource>META-INF/services/java.sql.Driver</resource>-->
+<!--                                </transformer>-->
+<!--                            </transformers>-->
 
                             <filters>
                                 <filter>
