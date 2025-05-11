@@ -1,10 +1,16 @@
 package asia.virtualmc.vLibrary.utilities.files;
 
+import asia.virtualmc.vLibrary.helpers.DriverShim;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 import java.util.List;
 
@@ -12,6 +18,58 @@ import java.util.List;
  * Utility methods for working with an embedded SQLite database within a Bukkit plugin.
  */
 public class SQLiteUtils {
+
+    private static final String SQLITE_VERSION = "3.49.1.0";
+    private static final String SQLITE_URL = "https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/" +
+            SQLITE_VERSION + "/sqlite-jdbc-" + SQLITE_VERSION + ".jar";
+
+    /**
+     * Initialize the SQLite driver by downloading the dependency at runtime
+     * @param plugin the plugin instance
+     * @return true if initialization was successful
+     */
+    public static boolean initialize(Plugin plugin) {
+        try {
+            File libFolder = new File(plugin.getDataFolder(), "lib");
+            if (!libFolder.exists() && !libFolder.mkdirs()) {
+                ConsoleUtils.severe("Failed to create lib directory for SQLite JDBC driver");
+                return false;
+            }
+
+            File sqliteJar = new File(libFolder, "sqlite-jdbc-" + SQLITE_VERSION + ".jar");
+
+            // Download SQLite JDBC if it doesn't exist
+            if (!sqliteJar.exists()) {
+                ConsoleUtils.info("Downloading SQLite JDBC driver...");
+                try {
+                    URL url = new URL(SQLITE_URL);
+                    Files.copy(url.openStream(), sqliteJar.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    ConsoleUtils.info("SQLite JDBC driver downloaded successfully.");
+                } catch (IOException e) {
+                    ConsoleUtils.severe("Failed to download SQLite JDBC driver: " + e.getMessage());
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+            // Create class loader and load the SQLite driver
+            URLClassLoader sqliteClassLoader = new URLClassLoader(
+                    new URL[]{sqliteJar.toURI().toURL()},
+                    SQLiteUtils.class.getClassLoader()
+            );
+
+            // Load SQLite driver via reflection (this *registers* it with DriverManager)
+            Class<?> driverClass = Class.forName("org.sqlite.JDBC", true, sqliteClassLoader);
+            Driver driverInstance = (Driver) driverClass.getDeclaredConstructor().newInstance();
+            DriverManager.registerDriver(new DriverShim(driverInstance));
+
+            return true;
+        } catch (Exception e) {
+            ConsoleUtils.severe("Failed to initialize SQLite: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
     /**
      * Creates (if needed) and opens a SQLite database file under the plugin's data folder.
@@ -36,13 +94,16 @@ public class SQLiteUtils {
                 ConsoleUtils.severe("Failed to create SQLite file at " + dbFile.getAbsolutePath());
                 return null;
             }
+
             String url = "jdbc:sqlite:" + dbFile.getAbsolutePath() + "?journal_mode=WAL&busy_timeout=5000";
             return DriverManager.getConnection(url);
 
-        } catch (SQLException | IOException e) {
+        } catch (IOException e) {
             ConsoleUtils.severe("Could not connect to SQLite (" + fileName + "): " + e.getMessage());
             e.printStackTrace();
             return null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -172,7 +233,10 @@ public class SQLiteUtils {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && !rs.wasNull()) return rs.getInt(1);
+                if (rs.next()) {
+                    int result = rs.getInt(1);
+                    if (!rs.wasNull()) return result;
+                }
             }
         } catch (SQLException e) {
             ConsoleUtils.severe("Could not retrieve int from " + tableName + ": " + e.getMessage());
@@ -197,7 +261,10 @@ public class SQLiteUtils {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && !rs.wasNull()) return rs.getDouble(1);
+                if (rs.next()) {
+                    double result = rs.getDouble(1);
+                    if (!rs.wasNull()) return result;
+                }
             }
         } catch (SQLException e) {
             ConsoleUtils.severe("Could not retrieve double from " + tableName + ": " + e.getMessage());
@@ -222,7 +289,10 @@ public class SQLiteUtils {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, uuid);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next() && !rs.wasNull()) return rs.getLong(1);
+                if (rs.next()) {
+                    long result = rs.getLong(1);
+                    if (!rs.wasNull()) return result;
+                }
             }
         } catch (SQLException e) {
             ConsoleUtils.severe("Could not retrieve long from " + tableName + ": " + e.getMessage());

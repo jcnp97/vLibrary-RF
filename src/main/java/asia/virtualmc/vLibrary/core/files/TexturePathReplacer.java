@@ -27,7 +27,7 @@ public class TexturePathReplacer {
     }
 
     private void initialize() {
-        YamlDocument yaml = YAMLUtils.getYamlDocument(vlib, "texture-path-replacer/config.yml");
+        YamlDocument yaml = YAMLUtils.getYaml(vlib, "texture-path-replacer/config.yml");
 
         if (yaml == null) {
             vlib.getLogger().severe("Couldn't find redis.yml from texture-path-replacer folder!");
@@ -37,7 +37,7 @@ public class TexturePathReplacer {
         boolean isEnable = yaml.getBoolean("enable");
         if (!isEnable) return;
 
-        Section section = YAMLUtils.getFileSection(yaml, "folder-list");
+        Section section = YAMLUtils.getSection(yaml, "folder-list");
         if (section == null) {
             vlib.getLogger().severe("Couldn't find folder-list section from texture-path-replacer folder!");
             return;

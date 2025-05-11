@@ -68,7 +68,7 @@ public class PDCUtils {
         return false;
     }
 
-    public static ItemStack addPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey PDC_KEY, int value) {
+    public static ItemStack addData(@NotNull ItemStack item, @NotNull NamespacedKey PDC_KEY, int value) {
         ItemStack clone = item.clone();
         ItemMeta meta = clone.getItemMeta();
         if (meta == null) {
@@ -82,7 +82,7 @@ public class PDCUtils {
         return clone;
     }
 
-    public static ItemStack addPersistentData(@NotNull ItemStack item, @NotNull NamespacedKey PDC_KEY, double value) {
+    public static ItemStack addData(@NotNull ItemStack item, @NotNull NamespacedKey PDC_KEY, double value) {
         ItemStack clone = item.clone();
         ItemMeta meta = clone.getItemMeta();
         if (meta == null) {
@@ -94,5 +94,15 @@ public class PDCUtils {
         clone.setItemMeta(meta);
 
         return clone;
+    }
+
+    public static void addData(@NotNull ItemMeta meta, @NotNull NamespacedKey PDC_KEY, int value) {
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(PDC_KEY, PersistentDataType.INTEGER, value);
+    }
+
+    public static void addData(@NotNull ItemMeta meta, @NotNull NamespacedKey PDC_KEY, double value) {
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(PDC_KEY, PersistentDataType.DOUBLE, value);
     }
 }

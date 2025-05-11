@@ -3,16 +3,20 @@ package asia.virtualmc.vLibrary.utilities.files;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class YAMLUtils {
 
-    public static YamlDocument getYamlDocument(@NotNull Plugin plugin, @NotNull String FILE_NAME) {
+    public static YamlDocument getYaml(@NotNull Plugin plugin, @NotNull String FILE_NAME) {
         File file = new File(plugin.getDataFolder(), FILE_NAME);
 
         try {
@@ -35,7 +39,7 @@ public class YAMLUtils {
         return null;
     }
 
-    public static Section getFileSection(@NotNull YamlDocument yaml, @NotNull String SECTION_NAME) {
+    public static Section getSection(@NotNull YamlDocument yaml, @NotNull String SECTION_NAME) {
         Section section = yaml.getSection(SECTION_NAME);
 
         if (section == null) {
@@ -46,7 +50,7 @@ public class YAMLUtils {
         return section;
     }
 
-    public static Section getFileSection(@NotNull Plugin plugin, @NotNull String FILE_NAME, @NotNull String SECTION_NAME) {
+    public static Section getSection(@NotNull Plugin plugin, @NotNull String FILE_NAME, @NotNull String SECTION_NAME) {
         File file = new File(plugin.getDataFolder(), FILE_NAME);
 
         try {
@@ -73,5 +77,29 @@ public class YAMLUtils {
         }
 
         return null;
+    }
+
+
+    public static List<String> getList(Plugin plugin, String fileName, String mainKey, String subKey) {
+        List<String> list = new ArrayList<>();
+
+        YamlDocument yaml = getYaml(plugin, fileName);
+        if (yaml == null) return null;
+
+        Section section = getSection(yaml, mainKey);
+        if (section == null) return null;
+
+        Set<String> subKeys = section.getRoutesAsStrings(false);
+        if (subKeys.isEmpty()) return null;
+
+        for (String key : subKeys) {
+            String path = mainKey + "." + key + "." + subKey;
+            List<String> items = yaml.getStringList(path);
+            if (items != null && !items.isEmpty()) {
+                list.addAll(items);
+            }
+        }
+
+        return list;
     }
 }

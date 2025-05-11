@@ -51,7 +51,7 @@ public class MySQLConnection {
     }
 
     private static void getConfig() {
-        Section section = YAMLUtils.getFileSection(VLibrary.getInstance(), "database.yml", "mysql");
+        Section section = YAMLUtils.getSection(VLibrary.getInstance(), "database.yml", "mysql");
         if (section == null) {
             ConsoleUtils.severe("Couldn't find/read database.yml!");
             return;

@@ -41,7 +41,7 @@ public class HologramUtils {
      * @param location  The location to spawn the hologram.
      * @return The UUID of the created hologram.
      */
-    public static UUID createPlayerItemHologram(Material material, int modelData, Player player, float x, float y, float z, Location location) {
+    public static UUID createItemHologram(Material material, int modelData, Player player, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
 
@@ -71,7 +71,7 @@ public class HologramUtils {
      * @param z         The z-scale of the hologram.
      * @param location  The location to spawn the hologram.
      */
-    public static void createPlayerItemHologram(Plugin plugin, Material material, int modelData, Player player, float x, float y, float z, Location location) {
+    public static void createItemHologram(Plugin plugin, Material material, int modelData, Player player, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
 
@@ -102,7 +102,7 @@ public class HologramUtils {
      * @param location The location to spawn the hologram.
      * @return The UUID of the created text hologram.
      */
-    public static UUID createPlayerTextHologram(String text, Player player, float x, float y, float z, Location location) {
+    public static UUID createTextHologram(String text, Player player, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         TextHologram textHologram = new TextHologram(hologramID.toString())
                 .setMiniMessageText(text)
@@ -122,11 +122,59 @@ public class HologramUtils {
      * @param hologramID The UUID of the text hologram to update.
      * @param newText    The new MiniMessage-formatted text to display.
      */
-    public static void setNewText(UUID hologramID, String newText) {
+    public static void modifyText(UUID hologramID, String newText) {
         if (!hologramIDs.contains(hologramID)) return;
 
         TextHologram textHologram = ((TextHologram) hologramManager.getHologram(hologramID.toString()).get());
         textHologram.setText(newText).update();
+    }
+
+    public static UUID createCompositeHologram(String text, Player player, Material material, int modelData,
+                                               float x, float y, float z, Location location) {
+
+        UUID uuid = UUID.randomUUID();
+        UUID hologramItem = UUID.fromString(uuid + "_ITEM");
+        UUID hologramText = UUID.fromString(uuid + "_TEXT");
+
+        ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
+
+        ItemHologram itemHologram = new ItemHologram(hologramItem.toString())
+                .setItem(holoItem)
+                .setGlowing(true)
+                .setGlowColor(Color.white)
+                .setDisplayType(ItemDisplayMeta.DisplayType.FIXED)
+                .addViewer(player)
+                .setScale(x, y, z)
+                .setBillboard(Display.Billboard.VERTICAL);
+
+        TextHologram textHologram = new TextHologram(hologramText.toString())
+                .setMiniMessageText(text)
+                .setAlignment(TextDisplay.TextAlignment.CENTER)
+                .addViewer(player)
+                .setScale(x, y, z)
+                .setBillboard(Display.Billboard.VERTICAL);
+
+        hologramManager.spawn(itemHologram, location);
+        hologramManager.spawn(textHologram, location.subtract(0, 0.25, 0));
+        hologramIDs.add(hologramItem);
+        hologramIDs.add(hologramText);
+
+        return uuid;
+    }
+
+    public static void removeCompositeHologram(UUID hologramID) {
+        UUID hologramItem = UUID.fromString(hologramID + "_ITEM");
+        UUID hologramText = UUID.fromString(hologramID + "_TEXT");
+
+        if (hologramIDs.contains(hologramItem)) {
+            hologramManager.remove(hologramItem.toString());
+            hologramIDs.remove(hologramItem);
+        }
+
+        if (hologramIDs.contains(hologramText)) {
+            hologramManager.remove(hologramText.toString());
+            hologramIDs.remove(hologramText);
+        }
     }
 
     /**
@@ -134,7 +182,7 @@ public class HologramUtils {
      *
      * @param hologramID The UUID of the hologram to remove.
      */
-    public static void removePlayerHologram(UUID hologramID) {
+    public static void removeHologram(UUID hologramID) {
         if (hologramIDs.contains(hologramID)) {
             hologramManager.remove(hologramID.toString());
             hologramIDs.remove(hologramID);
@@ -199,7 +247,7 @@ public class HologramUtils {
      * @param player     The player to add as a viewer.
      * @param hologramID The UUID of the hologram.
      */
-    public static void addViewerToHologram(Player player, UUID hologramID) {
+    public static void addViewer(Player player, UUID hologramID) {
         Optional<Hologram<?>> hologram = hologramManager.getHologram(hologramID.toString());
         hologram.ifPresent(value -> value.addViewer(player));
     }
@@ -210,7 +258,7 @@ public class HologramUtils {
      * @param player     The player to remove from the viewer list.
      * @param hologramID The UUID of the hologram.
      */
-    public static void removeViewerToHologram(Player player, UUID hologramID) {
+    public static void removeViewer(Player player, UUID hologramID) {
         Optional<Hologram<?>> hologram = hologramManager.getHologram(hologramID.toString());
         hologram.ifPresent(value -> value.removeViewer(player));
     }

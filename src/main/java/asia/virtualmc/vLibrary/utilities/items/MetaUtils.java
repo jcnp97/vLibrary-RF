@@ -1,12 +1,17 @@
 package asia.virtualmc.vLibrary.utilities.items;
 
 import asia.virtualmc.vLibrary.utilities.messages.AdventureUtils;
+import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MetaUtils {
@@ -53,7 +58,12 @@ public class MetaUtils {
         meta.lore(AdventureUtils.convertToComponent(lore));
     }
 
-    public static ItemStack modifyItemMeta(ItemStack item, String displayName, List<String> lore, int modelData) {
+    public static void setUnbreakable(ItemMeta meta) {
+        if (meta == null) return;
+        meta.setUnbreakable(true);
+    }
+
+    public static ItemStack modify(ItemStack item, String displayName, List<String> lore, int modelData) {
         if (item == null) {
             throw new IllegalArgumentException("Item cannot be null");
         }
@@ -71,5 +81,29 @@ public class MetaUtils {
         return clone;
     }
 
+    public static void addEnchantments(List<String> enchantsList, ItemMeta meta) {
+        String toolName = meta.getDisplayName();
 
+        for (String enchantEntry : enchantsList) {
+            String[] parts = enchantEntry.split(":");
+            if (parts.length == 2) {
+                String enchantName = parts[0];
+                int level;
+                try {
+                    level = Integer.parseInt(parts[1]);
+                    Enchantment enchant = Enchantment.getByKey(NamespacedKey.minecraft(enchantName.toLowerCase()));
+
+                    if (enchant != null) {
+                        meta.addEnchant(enchant, level, true);
+                    } else {
+                        ConsoleUtils.severe("Invalid enchantment '" + enchantName + "' for tool: " + toolName);
+                    }
+                } catch (NumberFormatException e) {
+                    ConsoleUtils.severe("Invalid enchantment level for '" + enchantEntry + "' in tool: " + toolName);
+                }
+            } else {
+                ConsoleUtils.severe("Invalid enchantment format '" + enchantEntry + "' for tool: " + toolName);
+            }
+        }
+    }
 }

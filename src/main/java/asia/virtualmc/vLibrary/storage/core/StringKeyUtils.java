@@ -9,16 +9,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StringKeyUtils {
 
     /**
      * Creates the necessary tables for storing stat definitions and player-specific stat data.
      *
-     * @param tableName The base name of the table (e.g., "skills", "kills").
+     * @param tableName The base name of the table
      * @param prefix    A log prefix used for logging errors or debug info.
      */
     public static void createTable(@NotNull String tableName,
@@ -120,18 +121,20 @@ public class StringKeyUtils {
     }
 
     /**
-     * Loads all stored data for a player.
+     * Loads all stored data for a player. If no data is found, returns a map with expected keys filled with 0.
      *
-     * @param uuid      The player's UUID.
-     * @param tableName The base table name.
-     * @param prefix    A log prefix for errors/debug.
-     * @return A map of data_name → amount. Empty if none found.
+     * @param uuid         The player's UUID.
+     * @param tableName    The base table name.
+     * @param dataNames     The list of data names.
+     * @param prefix       A log prefix for errors/debug.
+     * @return A map of data_name → amount. If no data found, returns a map of expected keys with 0.
      */
-    public static Map<String, Integer> loadPlayerData(@NotNull UUID uuid,
-                                                      @NotNull String tableName,
-                                                      String prefix) {
-        Map<String, Integer> result = new HashMap<>();
+    public static ConcurrentHashMap<String, Integer> loadPlayerData(@NotNull UUID uuid,
+                                                                    @NotNull String tableName,
+                                                                    @NotNull List<String> dataNames,
+                                                                    String prefix) {
 
+        ConcurrentHashMap<String, Integer> result = new ConcurrentHashMap<>();
         String sql = "SELECT data_name, amount FROM " + tableName + "_data WHERE player_id = ?";
 
         try (Connection conn = MySQLConnection.getConnection();
@@ -148,6 +151,13 @@ public class StringKeyUtils {
         } catch (SQLException e) {
             ConsoleUtils.severe(prefix,
                     "Failed to load data for player " + uuid + " from " + tableName + ": " + e.getMessage());
+        }
+
+        // If no data was found, pre-fill with expected keys at 0.
+        if (result.isEmpty()) {
+            for (String key : dataNames) {
+                result.put(key, 0);
+            }
         }
 
         return result;

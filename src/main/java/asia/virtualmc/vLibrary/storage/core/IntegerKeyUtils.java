@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class IntegerKeyUtils {
 
@@ -187,11 +188,11 @@ public class IntegerKeyUtils {
      * @param prefix    A log prefix used for logging errors or debug info.
      * @return A map where the key is the stat data ID and the value is the recorded amount.
      */
-    public static Map<Integer, Integer> loadPlayerData(@NotNull UUID uuid,
-                                                       @NotNull String tableName,
-                                                       String prefix) {
+    public static ConcurrentHashMap<Integer, Integer> loadPlayerData(@NotNull UUID uuid,
+                                                                     @NotNull String tableName,
+                                                                     String prefix) {
 
-        Map<Integer, Integer> playerDataMap = new HashMap<>();
+        ConcurrentHashMap<Integer, Integer> playerDataMap = new ConcurrentHashMap<>();
 
         try (Connection conn = MySQLConnection.getConnection()) {
             // Retrieve playerID using the external vlib_players table

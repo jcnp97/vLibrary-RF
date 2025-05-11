@@ -99,4 +99,35 @@ public class TextUtils {
         }
         return converted.toString();
     }
+
+    /**
+     * Generates a text-based progress bar using the specified filled and empty symbols.
+     * The progress bar visualizes the proportion of {@code value} relative to {@code maxValue},
+     * distributed across {@code totalBars}.
+     *
+     * <p>For example, if {@code filled = "<dark_green>❙"}, {@code empty = "<dark_gray>❙"},
+     * {@code value = 10.0}, {@code maxValue = 20.0}, and {@code totalBars = 20}, the method
+     * will return a string with 10 filled bars and 10 empty bars to represent 50% progress.</p>
+     *
+     * <p>If {@code value} exceeds {@code maxValue}, the progress bar will be fully filled.
+     * If {@code maxValue} is zero or negative, the bar will be fully empty to avoid division by zero.</p>
+     *
+     * @param filled     The string to represent a filled segment of the progress bar.
+     * @param empty      The string to represent an empty segment of the progress bar.
+     * @param value      The current value representing progress.
+     * @param maxValue   The maximum possible value (total progress threshold).
+     * @param totalBars  The total number of segments in the progress bar.
+     * @return A string that visually represents the progress bar.
+     */
+    public static String getProgressBar(String filled, String empty, double value, double maxValue, int totalBars) {
+        if (maxValue <= 0) {
+            return empty.repeat(totalBars);
+        }
+
+        double progress = Math.max(0.0, Math.min(1.0, value / maxValue));
+        int filledBars = (int) Math.round(progress * totalBars);
+        int emptyBars = totalBars - filledBars;
+
+        return filled.repeat(filledBars) + empty.repeat(emptyBars);
+    }
 }
