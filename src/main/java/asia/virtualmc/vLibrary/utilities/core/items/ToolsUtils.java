@@ -93,16 +93,16 @@ public class ToolsUtils {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
 
-            PDCUtils.addData(meta, TOOL_KEY, toolID);
+            PDCUtils.addInteger(meta, TOOL_KEY, toolID);
 
             for (Map.Entry<String, Integer> entry : intMap.entrySet()) {
                 NamespacedKey key = new NamespacedKey(plugin, entry.getKey().replace("-", "_"));
-                PDCUtils.addData(meta, key, entry.getValue());
+                PDCUtils.addInteger(meta, key, entry.getValue());
             }
 
             for (Map.Entry<String, Double> entry : doubleMap.entrySet()) {
                 NamespacedKey key = new NamespacedKey(plugin, entry.getKey().replace("-", "_"));
-                PDCUtils.addData(meta, key, entry.getValue());
+                PDCUtils.addDouble(meta, key, entry.getValue());
             }
 
             // Todo: Add decoration slot PDC
@@ -121,7 +121,7 @@ public class ToolsUtils {
 
         if (section != null) {
             for (String statName : section.getRoutesAsStrings(false)) {
-                double value = yaml.getDouble(newPath + statName);
+                double value = yaml.getDouble(newPath + "." + statName);
                 stats.put(statName, value);
             }
         }
@@ -136,7 +136,7 @@ public class ToolsUtils {
 
         if (section != null) {
             for (String statName : section.getRoutesAsStrings(false)) {
-                int value = yaml.getInt(newPath + statName);
+                int value = yaml.getInt(newPath + "." + statName);
                 stats.put(statName, value);
             }
         }

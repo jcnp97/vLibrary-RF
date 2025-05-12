@@ -36,6 +36,26 @@ public class TextUtils {
     }
 
     /**
+     * Converts a string to key format by:
+     * - Removing all non-letter characters (only a–z and A–Z allowed),
+     * - Replacing whitespace with underscores,
+     * - Converting to lowercase.
+     * Example: "Player's Data 123!" -> "players_data"
+     *
+     * @param string The input string.
+     * @return A lowercase, underscore-separated string with only a-z characters.
+     */
+    public static String toKeyFormat(String string) {
+        if (string == null || string.isEmpty()) return "";
+
+        // Remove everything except letters and spaces
+        String cleaned = string.replaceAll("[^a-zA-Z\\s]", "").trim();
+
+        // Replace all whitespace with underscore, then convert to lowercase
+        return cleaned.replaceAll("\\s+", "_").toLowerCase();
+    }
+
+    /**
      * Splits lines of lore into smaller lines with a maximum character count per line,
      * ensuring words are not split in the middle.
      *

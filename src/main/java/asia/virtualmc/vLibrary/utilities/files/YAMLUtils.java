@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -101,5 +102,14 @@ public class YAMLUtils {
         }
 
         return list;
+    }
+
+    public static int[] getArray(String string) {
+        if (string == null) return null;
+
+        return Arrays.stream(string.split(","))
+                .map(String::trim)
+                .mapToInt(Integer::parseInt)
+                .toArray();
     }
 }

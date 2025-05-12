@@ -9,8 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -131,7 +131,7 @@ public class StringKeyUtils {
      */
     public static ConcurrentHashMap<String, Integer> loadPlayerData(@NotNull UUID uuid,
                                                                     @NotNull String tableName,
-                                                                    @NotNull List<String> dataNames,
+                                                                    @NotNull Set<String> dataNames,
                                                                     String prefix) {
 
         ConcurrentHashMap<String, Integer> result = new ConcurrentHashMap<>();
