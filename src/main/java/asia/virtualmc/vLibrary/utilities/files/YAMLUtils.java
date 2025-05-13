@@ -10,10 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class YAMLUtils {
 
@@ -80,7 +77,6 @@ public class YAMLUtils {
         return null;
     }
 
-
     public static List<String> getList(Plugin plugin, String fileName, String mainKey, String subKey) {
         List<String> list = new ArrayList<>();
 
@@ -104,6 +100,23 @@ public class YAMLUtils {
         return list;
     }
 
+    public static List<String> getList(Plugin plugin, String fileName, String path) {
+        List<String> list = new ArrayList<>();
+
+        YamlDocument yaml = getYaml(plugin, fileName);
+        if (yaml == null) return null;
+
+        Section section = getSection(yaml, path);
+        if (section == null) return null;
+
+        List<String> items = yaml.getStringList(path);
+        if (items != null && !items.isEmpty()) {
+            list.addAll(items);
+        }
+
+        return list;
+    }
+
     public static int[] getArray(String string) {
         if (string == null) return null;
 
@@ -111,5 +124,22 @@ public class YAMLUtils {
                 .map(String::trim)
                 .mapToInt(Integer::parseInt)
                 .toArray();
+    }
+
+    public static Map<String, Double> getMap(Plugin plugin, String fileName, String path) {
+        Map<String, Double> map = new HashMap<>();
+
+        YamlDocument yaml = getYaml(plugin, fileName);
+        if (yaml == null) return null;
+
+        Section section = getSection(yaml, path);
+        if (section == null) return null;
+
+        Set<String> keys = section.getRoutesAsStrings(false);
+        for (String key : keys) {
+            map.put(key, section.getDouble(key));
+        }
+
+        return map;
     }
 }

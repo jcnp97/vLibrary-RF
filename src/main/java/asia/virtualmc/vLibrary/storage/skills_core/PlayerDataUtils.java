@@ -3,8 +3,7 @@ package asia.virtualmc.vLibrary.storage.skills_core;
 import asia.virtualmc.vLibrary.storage.database.MySQLConnection;
 import asia.virtualmc.vLibrary.storage.database.PlayerIDUtils;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
@@ -148,6 +147,7 @@ public class PlayerDataUtils {
                 // If no rows were updated, the player's data row doesn't exist yet.
                 createNewPlayerData(uuid, name, tablePrefix, prefix);
             }
+
         } catch (SQLException e) {
             ConsoleUtils.severe(prefix, "Failed to save " + name + " data on database: " + e.getMessage());
         }
