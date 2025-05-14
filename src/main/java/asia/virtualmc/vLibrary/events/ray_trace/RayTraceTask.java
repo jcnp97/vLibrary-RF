@@ -44,13 +44,11 @@ public class RayTraceTask {
         }
     }
 
-    public static void addPlayer(Player player) {
-        if (player != null) {
-            playerCache.add(player.getUniqueId());
-        }
+    public static void add(UUID uuid) {
+        playerCache.add(uuid);
     }
 
-    public static void removePlayer(Player player) {
-        playerCache.remove(player.getUniqueId());
+    public static void remove(UUID uuid) {
+        playerCache.remove(uuid);
     }
 }

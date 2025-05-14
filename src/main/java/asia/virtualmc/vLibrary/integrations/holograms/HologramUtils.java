@@ -2,6 +2,8 @@ package asia.virtualmc.vLibrary.integrations.holograms;
 
 import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.integrations.packet_events.PacketEventsUtils;
+import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
+import com.github.f4b6a3.ulid.UlidCreator;
 import com.maximde.hologramlib.HologramLib;
 import com.maximde.hologramlib.__relocated__.me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import com.maximde.hologramlib.hologram.*;
@@ -41,7 +43,7 @@ public class HologramUtils {
      * @param location  The location to spawn the hologram.
      * @return The UUID of the created hologram.
      */
-    public static UUID createItemHologram(Material material, int modelData, Player player, float x, float y, float z, Location location) {
+    public static UUID createItem(Material material, int modelData, Player player, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
 
@@ -71,7 +73,7 @@ public class HologramUtils {
      * @param z         The z-scale of the hologram.
      * @param location  The location to spawn the hologram.
      */
-    public static void createItemHologram(Plugin plugin, Material material, int modelData, Player player, float x, float y, float z, Location location) {
+    public static void createItem(Plugin plugin, Material material, int modelData, Player player, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
 
@@ -102,7 +104,7 @@ public class HologramUtils {
      * @param location The location to spawn the hologram.
      * @return The UUID of the created text hologram.
      */
-    public static UUID createTextHologram(String text, Player player, float x, float y, float z, Location location) {
+    public static UUID createText(String text, Player player, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         TextHologram textHologram = new TextHologram(hologramID.toString())
                 .setMiniMessageText(text)
@@ -129,52 +131,43 @@ public class HologramUtils {
         textHologram.setText(newText).update();
     }
 
-    public static UUID createCompositeHologram(String text, Player player, Material material, int modelData,
-                                               float x, float y, float z, Location location) {
+    public static String createComposite(String text, Player player, Material material, int modelData,
+                                                 float x, float y, float z, Location location) {
 
-        UUID uuid = UUID.randomUUID();
-        UUID hologramItem = UUID.fromString(uuid + "_ITEM");
-        UUID hologramText = UUID.fromString(uuid + "_TEXT");
+        String hologramID = UlidCreator.getUlid().toString().toLowerCase();
+        String hologramItem = hologramID + "_item";
+        String hologramText = hologramID + "_text";
 
         ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
 
-        ItemHologram itemHologram = new ItemHologram(hologramItem.toString())
+        ItemHologram itemHologram = new ItemHologram(hologramItem)
                 .setItem(holoItem)
                 .setGlowing(true)
                 .setGlowColor(Color.white)
                 .setDisplayType(ItemDisplayMeta.DisplayType.FIXED)
                 .addViewer(player)
-                .setScale(x, y, z)
+                .setScale(x * 0.3f, y * 0.3f, z * 0.3f)
                 .setBillboard(Display.Billboard.VERTICAL);
 
-        TextHologram textHologram = new TextHologram(hologramText.toString())
+        TextHologram textHologram = new TextHologram(hologramText)
                 .setMiniMessageText(text)
                 .setAlignment(TextDisplay.TextAlignment.CENTER)
                 .addViewer(player)
                 .setScale(x, y, z)
                 .setBillboard(Display.Billboard.VERTICAL);
 
-        hologramManager.spawn(itemHologram, location);
-        hologramManager.spawn(textHologram, location.subtract(0, 0.25, 0));
-        hologramIDs.add(hologramItem);
-        hologramIDs.add(hologramText);
+        hologramManager.spawn(itemHologram, location.clone());
+        hologramManager.spawn(textHologram, location.clone().add(0, 0.1, 0));
 
-        return uuid;
+        return hologramID;
     }
 
-    public static void removeCompositeHologram(UUID hologramID) {
-        UUID hologramItem = UUID.fromString(hologramID + "_ITEM");
-        UUID hologramText = UUID.fromString(hologramID + "_TEXT");
+    public static void removeComposite(String hologramID) {
+        String hologramItem = hologramID + "_item";
+        String hologramText = hologramID + "_text";
 
-        if (hologramIDs.contains(hologramItem)) {
-            hologramManager.remove(hologramItem.toString());
-            hologramIDs.remove(hologramItem);
-        }
-
-        if (hologramIDs.contains(hologramText)) {
-            hologramManager.remove(hologramText.toString());
-            hologramIDs.remove(hologramText);
-        }
+        hologramManager.remove(hologramItem);
+        hologramManager.remove(hologramText);
     }
 
     /**
@@ -182,7 +175,7 @@ public class HologramUtils {
      *
      * @param hologramID The UUID of the hologram to remove.
      */
-    public static void removeHologram(UUID hologramID) {
+    public static void remove(UUID hologramID) {
         if (hologramIDs.contains(hologramID)) {
             hologramManager.remove(hologramID.toString());
             hologramIDs.remove(hologramID);
@@ -200,7 +193,7 @@ public class HologramUtils {
      * @param location  The location to spawn the hologram.
      * @return The UUID of the created hologram.
      */
-    public static UUID createItemHologram(Material material, int modelData, float x, float y, float z, Location location) {
+    public static UUID createItem(Material material, int modelData, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         ItemStack holoItem = PacketEventsUtils.getItemStack(material, modelData);
 
@@ -227,7 +220,7 @@ public class HologramUtils {
      * @param location The location to spawn the hologram.
      * @return The UUID of the created text hologram.
      */
-    public static UUID createTextHologram(String text, float x, float y, float z, Location location) {
+    public static UUID createText(String text, float x, float y, float z, Location location) {
         UUID hologramID = UUID.randomUUID();
         TextHologram textHologram = new TextHologram(hologramID.toString(), RenderMode.ALL)
                 .setMiniMessageText(text)
@@ -266,7 +259,7 @@ public class HologramUtils {
     /**
      * Removes all spawned holograms and clears the internal hologram registry.
      */
-    public static void clearAllHolograms() {
+    public static void clearAll() {
         hologramManager.removeAll();
         hologramIDs.clear();
     }

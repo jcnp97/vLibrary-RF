@@ -42,7 +42,7 @@ public final class VLibrary extends JavaPlugin {
     @Override
     public void onDisable() {
         CommandAPI.onDisable();
-        HologramUtils.clearAllHolograms();
+        HologramUtils.clearAll();
     }
 
     public static VLibrary getInstance() {
