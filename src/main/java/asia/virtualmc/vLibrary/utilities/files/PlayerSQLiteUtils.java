@@ -2,7 +2,6 @@ package asia.virtualmc.vLibrary.utilities.files;
 
 import asia.virtualmc.vLibrary.helpers.DriverShim;
 import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Utility methods for working with an embedded SQLite database within a Bukkit plugin.
  */
-public class SQLiteUtils {
+public class PlayerSQLiteUtils {
 
     private static final String SQLITE_VERSION = "3.49.1.0";
     private static final String SQLITE_URL = "https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/" +
@@ -55,7 +54,7 @@ public class SQLiteUtils {
             // Create class loader and load the SQLite driver
             URLClassLoader sqliteClassLoader = new URLClassLoader(
                     new URL[]{sqliteJar.toURI().toURL()},
-                    SQLiteUtils.class.getClassLoader()
+                    PlayerSQLiteUtils.class.getClassLoader()
             );
 
             // Load SQLite driver via reflection (this *registers* it with DriverManager)

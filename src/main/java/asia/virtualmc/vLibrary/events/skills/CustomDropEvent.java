@@ -10,11 +10,12 @@ public class CustomDropEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
     private final Player player;
     private final boolean effects;
-    private Object data;
     private boolean cancelled;
+    private int rarityID;
 
-    public CustomDropEvent(Player player, boolean effects) {
+    public CustomDropEvent(Player player, int rarityID, boolean effects) {
         this.player = player;
+        this.rarityID = rarityID;
         this.effects = effects;
     }
 
@@ -22,15 +23,13 @@ public class CustomDropEvent extends Event implements Cancellable {
         return player;
     }
 
-    public void setData(Object data) {
-        this.data = data;
-    }
+    public int getRarityID() { return rarityID; }
 
-    public <T> T getData(Class<T> type) {
-        return type.cast(data);
-    }
+    public void addRarity(int value) { this.rarityID += value ;}
 
-    public boolean canTriggerEffects() {
+    public void setRarity(int value) { this.rarityID = value ;}
+
+    public boolean canTrigger() {
         return effects;
     }
 

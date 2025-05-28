@@ -109,7 +109,7 @@ public class JSONUtils {
         }
     }
 
-    public static double getDoubleValue(Plugin plugin, String relativePath, String key) {
+    public static double getDouble(Plugin plugin, String relativePath, String key) {
         File file = new File(plugin.getDataFolder(), relativePath);
 
         if (!file.exists() || file.length() == 0) {
@@ -131,8 +131,8 @@ public class JSONUtils {
         return 0.0;
     }
 
-    public static long getLongValue(Plugin plugin, String FILE_PATH, String KEY) {
-        File file = new File(plugin.getDataFolder(), FILE_PATH);
+    public static long getLong(Plugin plugin, String relativePath, String key) {
+        File file = new File(plugin.getDataFolder(), relativePath);
 
         if (!file.exists() || file.length() == 0) {
             return 0;
@@ -140,8 +140,8 @@ public class JSONUtils {
 
         try (FileReader reader = new FileReader(file)) {
             JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
-            if (jsonObject.has(KEY)) {
-                return jsonObject.get(KEY).getAsLong();
+            if (jsonObject.has(key)) {
+                return jsonObject.get(key).getAsLong();
             }
         } catch (Exception e) {
             plugin.getLogger().severe("Failed to read JSON: " + e.getMessage());
@@ -150,7 +150,7 @@ public class JSONUtils {
         return 0;
     }
 
-    public static void addNestedKeyValue(Plugin plugin, String relativePath, String mainKey, String subKey, String value) {
+    public static void addNestedValue(Plugin plugin, String relativePath, String mainKey, String subKey, String value) {
         File file = new File(plugin.getDataFolder(), relativePath);
 
         if (file.getParentFile() != null && !file.getParentFile().exists()) {
@@ -191,8 +191,8 @@ public class JSONUtils {
         }
     }
 
-    public static void deleteNestedKeyValue(Plugin plugin, String PATH_FILE, String mainKey, String value) {
-        File file = new File(plugin.getDataFolder(), PATH_FILE);
+    public static void removeNestedValue(Plugin plugin, String relativePath, String mainKey, String value) {
+        File file = new File(plugin.getDataFolder(), relativePath);
         if (!file.exists() || file.length() == 0) {
             return;
         }
@@ -245,7 +245,7 @@ public class JSONUtils {
         return null;
     }
 
-    public static Map<String, String> getAllValues(Plugin plugin, String relativePath, String key) {
+    public static Map<String, String> getAll(Plugin plugin, String relativePath, String key) {
         Map<String, String> result = new HashMap<>();
         File file = new File(plugin.getDataFolder(), relativePath);
         if (!file.exists() || file.length() == 0) {
@@ -265,8 +265,8 @@ public class JSONUtils {
         return result;
     }
 
-    public static Set<String> getMainKeys(Plugin plugin, String PATH_FILE) {
-        File file = new File(plugin.getDataFolder(), PATH_FILE);
+    public static Set<String> getKeys(Plugin plugin, String relativePath) {
+        File file = new File(plugin.getDataFolder(), relativePath);
         if (!file.exists() || file.length() == 0) {
             return Collections.emptySet();
         }
@@ -281,11 +281,10 @@ public class JSONUtils {
         return Collections.emptySet();
     }
 
-    public static void addStringData(Plugin plugin, String value, String PATH_FILE) {
-        File file = new File(plugin.getDataFolder(), PATH_FILE);
+    public static void addString(Plugin plugin, String relativePath, String value) {
+        File file = new File(plugin.getDataFolder(), relativePath);
         JsonArray array = new JsonArray();
 
-        // If file exists and is non‐empty, parse existing array
         if (file.exists() && file.length() > 0) {
             try (FileReader reader = new FileReader(file)) {
                 array = JsonParser.parseReader(reader).getAsJsonArray();
@@ -295,7 +294,6 @@ public class JSONUtils {
             }
         }
 
-        // Append new value and write back
         array.add(value);
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(array, writer);
@@ -304,8 +302,8 @@ public class JSONUtils {
         }
     }
 
-    public static Set<String> getAllStringData(Plugin plugin, String PATH_FILE) {
-        File file = new File(plugin.getDataFolder(), PATH_FILE);
+    public static Set<String> getAllString(Plugin plugin, String relativePath) {
+        File file = new File(plugin.getDataFolder(), relativePath);
         Set<String> result = new HashSet<>();
 
         if (!file.exists() || file.length() == 0) {
@@ -326,20 +324,20 @@ public class JSONUtils {
         return result;
     }
 
-    public static void clearStringDuplicates(Plugin plugin, String PATH_FILE) {
-        Set<String> unique = getAllStringData(plugin, PATH_FILE);
+    public static void clearDuplicates(Plugin plugin, String relativePath) {
+        Set<String> unique = getAllString(plugin, relativePath);
         JsonArray array = new JsonArray();
         unique.forEach(array::add);
 
-        try (FileWriter writer = new FileWriter(new File(PATH_FILE))) {
+        try (FileWriter writer = new FileWriter(new File(relativePath))) {
             gson.toJson(array, writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void deleteStringData(Plugin plugin, String value, String PATH_FILE) {
-        File file = new File(plugin.getDataFolder(), PATH_FILE);
+    public static void removeString(Plugin plugin, String relativePath, String value) {
+        File file = new File(plugin.getDataFolder(), relativePath);
         if (!file.exists() || file.length() == 0) return;
 
         JsonArray array;
@@ -365,6 +363,70 @@ public class JSONUtils {
         try (FileWriter writer = new FileWriter(file)) {
             gson.toJson(array, writer);
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reads and pretty-prints JSON content from the given path inside plugin's folder.
+     *
+     * @param plugin   the plugin instance
+     * @param pathFile the relative path to the JSON file
+     * @return the formatted JSON string, or null if reading fails
+     */
+    public static String read(Plugin plugin, String pathFile) {
+        File file = new File(plugin.getDataFolder(), pathFile);
+
+        if (!file.exists()) {
+            plugin.getLogger().warning("JSON file not found at: " + file.getPath());
+            return null;
+        }
+
+        try {
+            String rawContent = java.nio.file.Files.readString(file.toPath());
+            com.google.gson.JsonElement json = com.google.gson.JsonParser.parseString(rawContent);
+            return gson.toJson(json);
+        } catch (IOException | RuntimeException e) {
+            plugin.getLogger().severe("Failed to read/parse JSON file: " + file.getPath());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Generates a new JSON file based on a template file by replacing `{path}` and `{name}` placeholders.
+     *
+     * @param plugin     the plugin instance
+     * @param path       the string to replace `{path}`
+     * @param name       the string to replace `{name}`
+     * @param pathFile   the relative path to the JSON template file to clone
+     * @param pathResult the relative folder to store the generated file (inside plugin's folder)
+     */
+    public static void generate(Plugin plugin, String path, String name, String pathFile, String pathResult) {
+        String content = read(plugin, pathFile);
+
+        if (content == null) {
+            plugin.getLogger().severe("Failed to read template JSON file. Aborting generation.");
+            return;
+        }
+
+        String modifiedContent = content
+                .replace("{path}", path)
+                .replace("{name}", name);
+
+        File outputDir = new File(plugin.getDataFolder(), pathResult);
+        if (!outputDir.exists() && !outputDir.mkdirs()) {
+            plugin.getLogger().severe("Failed to create directories for: " + outputDir.getPath());
+            return;
+        }
+
+        File outputFile = new File(outputDir, name + ".json");
+
+        try (FileWriter writer = new FileWriter(outputFile)) {
+            writer.write(modifiedContent);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to write JSON file: " + outputFile.getPath());
             e.printStackTrace();
         }
     }

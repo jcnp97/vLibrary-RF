@@ -91,6 +91,24 @@ public class TextUtils {
     }
 
     /**
+     * Converts a single string to a new stylized font using a custom character mapping.
+     *
+     * @param input the string to convert
+     * @return the converted string with stylized characters
+     */
+    public static String convertToNewFont(String input) {
+        String NORMAL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String CONVERTED = "ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        StringBuilder converted = new StringBuilder();
+        for (char ch : input.toCharArray()) {
+            int index = NORMAL.indexOf(ch);
+            converted.append(index != -1 ? CONVERTED.charAt(index) : ch);
+        }
+        return converted.toString();
+    }
+
+    /**
      * Converts each string in the input list to a new stylized font using a custom character mapping.
      *
      * @param inputList the list of strings to convert

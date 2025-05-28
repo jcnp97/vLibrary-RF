@@ -14,7 +14,7 @@ public class InstantUtils {
      *
      * @return the current time
      */
-    public static Instant getTime() {
+    public static Instant getPresent() {
         return Instant.now();
     }
 
@@ -24,18 +24,8 @@ public class InstantUtils {
      * @param seconds the number of seconds to add
      * @return the future time
      */
-    public static Instant getFutureTime(long seconds) {
+    public static Instant getFuture(long seconds) {
         return Instant.now().plusSeconds(seconds);
-    }
-
-    /**
-     * Returns an {@link Instant} representing the current time plus the specified number of milliseconds.
-     *
-     * @param milliseconds the number of milliseconds to add
-     * @return the future time
-     */
-    public static Instant getFutureTimeMillis(long milliseconds) {
-        return Instant.now().plusMillis(milliseconds);
     }
 
     /**
@@ -87,7 +77,7 @@ public class InstantUtils {
      * @param time the time to format
      * @return a formatted date-time string in the system's default time zone
      */
-    public static String format(Instant time) {
+    public static String toReadableFormat(Instant time) {
         return DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault()).format(time);
     }
 
@@ -115,5 +105,28 @@ public class InstantUtils {
 
         double percent = (elapsedMillis / (double) totalMillis) * 100.0;
         return Math.max(0.0, Math.min(100.0, percent));
+    }
+
+    /**
+     * Converts an {@link Instant} to a long value representing epoch seconds for database storage.
+     *
+     * @param time the {@link Instant} to convert
+     * @return the epoch second representation of the time
+     */
+    public static long toLong(Instant time) {
+        if (time == null) {
+            throw new IllegalArgumentException("Instant cannot be null");
+        }
+        return time.getEpochSecond();
+    }
+
+    /**
+     * Converts a long value representing epoch seconds from the database into an {@link Instant}.
+     *
+     * @param epochSeconds the epoch seconds value
+     * @return the corresponding {@link Instant}
+     */
+    public static Instant toInstant(long epochSeconds) {
+        return Instant.ofEpochSecond(epochSeconds);
     }
 }

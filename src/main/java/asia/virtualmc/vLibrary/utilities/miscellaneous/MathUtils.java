@@ -1,6 +1,6 @@
 package asia.virtualmc.vLibrary.utilities.miscellaneous;
 
-public class CalcUtils {
+public class MathUtils {
 
     public static double sum(double[] array) {
         double sum = 0.0;

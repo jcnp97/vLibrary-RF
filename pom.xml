@@ -330,5 +330,20 @@
             <version>3.49.1.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- ULID -->
+        <dependency>
+            <groupId>com.github.f4b6a3</groupId>
+            <artifactId>ulid-creator</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+
+        <!-- BetterModel -->
+        <dependency>
+            <groupId>io.github.toxicity188</groupId>
+            <artifactId>BetterModel</artifactId>
+            <version>1.6.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

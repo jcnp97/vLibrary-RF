@@ -183,6 +183,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>io.github.toxicity188</groupId>
+      <artifactId>BetterModel</artifactId>
+      <version>1.6.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>me.casperge.realisticseasons</groupId>
       <artifactId>RealisticSeasonsMaven</artifactId>
       <version>11.6.7</version>

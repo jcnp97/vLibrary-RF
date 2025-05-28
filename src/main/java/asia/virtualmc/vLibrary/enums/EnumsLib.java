@@ -31,4 +31,10 @@ public class EnumsLib {
             return seconds;
         }
     }
+
+    public enum RayTraceType {
+        ENTITY,
+        BLOCK,
+        NONE
+    }
 }

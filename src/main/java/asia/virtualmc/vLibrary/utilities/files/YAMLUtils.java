@@ -1,9 +1,9 @@
 package asia.virtualmc.vLibrary.utilities.files;
 
+import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,11 +14,11 @@ import java.util.*;
 
 public class YAMLUtils {
 
-    public static YamlDocument getYaml(@NotNull Plugin plugin, @NotNull String FILE_NAME) {
-        File file = new File(plugin.getDataFolder(), FILE_NAME);
+    public static YamlDocument getYaml(@NotNull Plugin plugin, @NotNull String fileName) {
+        File file = new File(plugin.getDataFolder(), fileName);
 
         try {
-            InputStream defaultFile = plugin.getResource(FILE_NAME);
+            InputStream defaultFile = plugin.getResource(fileName);
             YamlDocument config;
 
             if (defaultFile != null) {
@@ -30,29 +30,29 @@ public class YAMLUtils {
             return config;
 
         } catch (IOException e) {
-            plugin.getLogger().severe("An error occurred when trying to read " + FILE_NAME);
+            plugin.getLogger().severe("An error occurred when trying to read " + fileName);
             e.getCause();
         }
 
         return null;
     }
 
-    public static Section getSection(@NotNull YamlDocument yaml, @NotNull String SECTION_NAME) {
-        Section section = yaml.getSection(SECTION_NAME);
+    public static Section getSection(@NotNull YamlDocument yaml, @NotNull String sectionPath) {
+        Section section = yaml.getSection(sectionPath);
 
         if (section == null) {
-            Bukkit.getServer().getLogger().severe("Missing " + SECTION_NAME + "!");
+            Bukkit.getServer().getLogger().severe("Missing " + sectionPath + "!");
             return null;
         }
 
         return section;
     }
 
-    public static Section getSection(@NotNull Plugin plugin, @NotNull String FILE_NAME, @NotNull String SECTION_NAME) {
-        File file = new File(plugin.getDataFolder(), FILE_NAME);
+    public static Section getSection(@NotNull Plugin plugin, @NotNull String fileName, @NotNull String sectionPath) {
+        File file = new File(plugin.getDataFolder(), fileName);
 
         try {
-            InputStream defaultFile = plugin.getResource(FILE_NAME);
+            InputStream defaultFile = plugin.getResource(fileName);
             YamlDocument config;
 
             if (defaultFile != null) {
@@ -61,16 +61,16 @@ public class YAMLUtils {
                 config = YamlDocument.create(file);
             }
 
-            Section section = config.getSection(SECTION_NAME);
+            Section section = config.getSection(sectionPath);
 
             if (section == null) {
-                plugin.getLogger().severe("Missing " + SECTION_NAME + " section in " + FILE_NAME + "!");
+                plugin.getLogger().severe("Missing " + sectionPath + " section in " + fileName + "!");
                 return null;
             }
 
             return section;
         } catch (IOException e) {
-            plugin.getLogger().severe("An error occurred when trying to read " + FILE_NAME);
+            plugin.getLogger().severe("An error occurred when trying to read " + fileName);
             e.getCause();
         }
 
@@ -100,21 +100,20 @@ public class YAMLUtils {
         return list;
     }
 
-    public static List<String> getList(Plugin plugin, String fileName, String path) {
-        List<String> list = new ArrayList<>();
-
+    public static List<String> getList(Plugin plugin, String fileName, String sectionPath) {
         YamlDocument yaml = getYaml(plugin, fileName);
-        if (yaml == null) return null;
-
-        Section section = getSection(yaml, path);
-        if (section == null) return null;
-
-        List<String> items = yaml.getStringList(path);
-        if (items != null && !items.isEmpty()) {
-            list.addAll(items);
+        if (yaml == null) {
+            ConsoleUtils.severe("Unable to find " + fileName + "!");
+            return null;
         }
 
-        return list;
+        List<String> items = yaml.getStringList(sectionPath);
+        if (items == null || items.isEmpty()) {
+            ConsoleUtils.severe("Unable to find list at section path " + sectionPath + "!");
+            return null;
+        }
+
+        return items;
     }
 
     public static int[] getArray(String string) {

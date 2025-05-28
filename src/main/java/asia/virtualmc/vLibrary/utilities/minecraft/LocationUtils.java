@@ -3,73 +3,65 @@ package asia.virtualmc.vLibrary.utilities.minecraft;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 
 public class LocationUtils {
 
     /**
-     * Formats a {@link Location} into a simple comma-separated string using block coordinates.
+     * Serializes a block Location into a comma-delimited String: world,x,y,z
      *
-     * @param location The location to format.
-     * @return A string in the format "x, y, z" representing block coordinates.
+     * @param location the Location to serialize (block coordinates only)
+     * @return comma-delimited representation
+     * @throws IllegalArgumentException if location or its world is null
      */
-    public static String formatLocation(Location location) {
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
-        return x + ", " + y + ", " + z;
+    public static String serialize(Location location) {
+        if (location == null) {
+            throw new IllegalArgumentException("Location cannot be null");
+        }
+        World world = location.getWorld();
+        if (world == null) {
+            throw new IllegalArgumentException("Location world cannot be null");
+        }
+
+        return String.join(",",
+                world.getName(),
+                Integer.toString(location.getBlockX()),
+                Integer.toString(location.getBlockY()),
+                Integer.toString(location.getBlockZ())
+        );
     }
 
     /**
-     * Parses a comma-separated location string and world name into a {@link Location} object.
+     * Deserializes a comma-delimited block Location String back into a Location.
+     * Expects format: world,x,y,z
      *
-     * @param location A string in the format "x, y, z".
-     * @param worldName The name of the world where the location resides.
-     * @return A {@link Location} object if parsing is successful and the world is found, or null otherwise.
+     * @param location the serialized Location
+     * @return reconstructed Location with yaw=0, pitch=0
+     * @throws IllegalArgumentException if data is malformed or world not found
      */
-    public static Location parseLocation(String location, String worldName) {
-        String[] parts = location.split(", ");
-        if (parts.length != 3) return null;
+    public static Location deserialize(String location) {
+        if (location == null || location.isEmpty()) {
+            throw new IllegalArgumentException("Location data cannot be null or empty");
+        }
+        String[] parts = location.split(",");
+        if (parts.length != 4) {
+            throw new IllegalArgumentException("Invalid location format, expected 4 parts: world,x,y,z");
+        }
 
+        String worldName = parts[0];
         World world = Bukkit.getWorld(worldName);
-        if (world == null) return null; // world not found
+        if (world == null) {
+            throw new IllegalArgumentException("World '" + worldName + "' not found");
+        }
 
+        int x, y, z;
         try {
-            int x = Integer.parseInt(parts[0]);
-            int y = Integer.parseInt(parts[1]);
-            int z = Integer.parseInt(parts[2]);
-            return new Location(world, x, y, z);
+            x = Integer.parseInt(parts[1]);
+            y = Integer.parseInt(parts[2]);
+            z = Integer.parseInt(parts[3]);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException("Coordinates must be valid integers", e);
         }
-    }
 
-    /**
-     * Retrieves a {@link World} object from the given world name.
-     *
-     * @param worldName The name of the world to retrieve.
-     * @return The {@link World} object if it exists, or null if not found.
-     */
-
-    public static World parseWorld(String worldName) {
-        return Bukkit.getWorld(worldName);
-    }
-
-    /**
-     * Parses a string into a {@link BlockFace} enum, ignoring case and trimming whitespace.
-     *
-     * @param blockFace The string representation of a block face (e.g., "north", "EAST").
-     * @return The corresponding {@link BlockFace}, or null if the input is invalid.
-     */
-    public static BlockFace parseBlockFace(String blockFace) {
-        if (blockFace == null || blockFace.trim().isEmpty()) return null;
-
-        try {
-            return BlockFace.valueOf(blockFace.trim().toUpperCase());
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new Location(world, x, y, z);
     }
 }

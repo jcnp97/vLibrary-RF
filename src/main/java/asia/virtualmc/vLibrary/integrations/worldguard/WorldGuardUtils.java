@@ -55,19 +55,6 @@ public class WorldGuardUtils {
         container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     }
 
-    public static ProtectedRegion getRegion(Player player) {
-        Location loc = player.getLocation();
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager regions = container.get(BukkitAdapter.adapt(loc.getWorld()));
-
-        if (regions == null) return null;
-
-        ApplicableRegionSet regionSet = regions.getApplicableRegions(BukkitAdapter.asBlockVector(loc));
-        Set<ProtectedRegion> regionList = regionSet.getRegions();
-
-        return regionList.isEmpty() ? null : regionList.iterator().next();
-    }
-
     public static int getRegionID(Player player, String[] regionNames) {
         Location loc = player.getLocation();
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();

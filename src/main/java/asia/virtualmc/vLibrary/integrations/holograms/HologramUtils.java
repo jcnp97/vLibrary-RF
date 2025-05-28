@@ -2,7 +2,6 @@ package asia.virtualmc.vLibrary.integrations.holograms;
 
 import asia.virtualmc.vLibrary.VLibrary;
 import asia.virtualmc.vLibrary.integrations.packet_events.PacketEventsUtils;
-import asia.virtualmc.vLibrary.utilities.messages.ConsoleUtils;
 import com.github.f4b6a3.ulid.UlidCreator;
 import com.maximde.hologramlib.HologramLib;
 import com.maximde.hologramlib.__relocated__.me.tofaa.entitylib.meta.display.ItemDisplayMeta;

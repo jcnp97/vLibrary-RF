@@ -1,27 +1,28 @@
 package asia.virtualmc.vLibrary.events.ray_trace;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.util.RayTraceResult;
 
-public class RayTraceEvent extends Event implements Cancellable {
+public class RayTraceBlockEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;
-    private final Entity entity;
+    private final Block block;
     private final RayTraceResult result;
     private final Location location;
     private boolean cancelled;
 
-    public RayTraceEvent(Player player, RayTraceResult result) {
+    public RayTraceBlockEvent(Player player, RayTraceResult result) {
         this.player = player;
         this.result = result;
-        this.entity = (result != null) ? result.getHitEntity() : null;
-        this.location = (entity != null) ? entity.getLocation() : null;
+        this.block = (result != null) ? result.getHitBlock() : null;
+        this.location = (block != null) ? block.getLocation() : null;
     }
 
     public Player getPlayer() {
@@ -32,11 +33,15 @@ public class RayTraceEvent extends Event implements Cancellable {
         return result;
     }
 
-    public Entity getRayTracedEntity() {
-        return entity;
+    public Block getBlock() {
+        return block;
     }
 
-    public Location getEntityLocation() {
+    public Material getType() {
+        return block.getType();
+    }
+
+    public Location getLocation() {
         return location;
     }
 
