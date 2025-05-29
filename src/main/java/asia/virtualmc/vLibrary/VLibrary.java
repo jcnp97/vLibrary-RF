@@ -5,7 +5,8 @@ import asia.virtualmc.vLibrary.core.CoreManager;
 import asia.virtualmc.vLibrary.integrations.holograms.HologramUtils;
 import asia.virtualmc.vLibrary.integrations.IntegrationManager;
 import asia.virtualmc.vLibrary.storage.StorageManager;
-import asia.virtualmc.vLibrary.utilities.files.PlayerSQLiteUtils;
+import asia.virtualmc.vLibrary.tasks.TaskManager;
+import asia.virtualmc.vLibrary.utilities.files.SQLiteUtils;
 import com.maximde.hologramlib.HologramLib;
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
@@ -16,6 +17,7 @@ public final class VLibrary extends JavaPlugin {
     private CommandManager commandManager;
     private CoreManager coreManager;
     private IntegrationManager integrationManager;
+    private TaskManager taskManager;
 
     @Override
     public void onEnable() {
@@ -23,9 +25,10 @@ public final class VLibrary extends JavaPlugin {
         this.coreManager = new CoreManager(this);
         this.commandManager = new CommandManager(this);
         this.integrationManager = new IntegrationManager(this);
+        this.taskManager = new TaskManager(this);
 
         CommandAPI.onEnable();
-        PlayerSQLiteUtils.initialize(this);
+        SQLiteUtils.initialize(this);
         StorageManager storageManager = new StorageManager(this);
     }
 
@@ -41,8 +44,12 @@ public final class VLibrary extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        taskManager.cancelAll();
+
+        // Static
         CommandAPI.onDisable();
         HologramUtils.clearAll();
+        SQLiteUtils.closeAll();
     }
 
     public static VLibrary getInstance() {

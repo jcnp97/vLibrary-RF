@@ -113,7 +113,7 @@ public class InstantUtils {
      * @param time the {@link Instant} to convert
      * @return the epoch second representation of the time
      */
-    public static long toLong(Instant time) {
+    public static long serialize(Instant time) {
         if (time == null) {
             throw new IllegalArgumentException("Instant cannot be null");
         }
@@ -126,7 +126,7 @@ public class InstantUtils {
      * @param epochSeconds the epoch seconds value
      * @return the corresponding {@link Instant}
      */
-    public static Instant toInstant(long epochSeconds) {
+    public static Instant deserialize(long epochSeconds) {
         return Instant.ofEpochSecond(epochSeconds);
     }
 }

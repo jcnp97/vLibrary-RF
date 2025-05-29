@@ -51,7 +51,7 @@ public class RayTraceTask {
                 continue;
             }
 
-            EnumsLib.RayTraceType type = playerCache.getOrDefault(uuid, EnumsLib.RayTraceType.NONE);
+            EnumsLib.RayTraceType type = playerCache.get(uuid);
 
             // Nexo Furniture & BetterModel entities
             RayTraceResult entityResult = player.getWorld().rayTrace(
@@ -66,10 +66,11 @@ public class RayTraceTask {
             );
 
             if (entityResult != null && entityResult.getHitEntity() != null) {
-                if (type != EnumsLib.RayTraceType.ENTITY) {
-                    Bukkit.getPluginManager().callEvent(new RayTraceEntityEvent(player, entityResult));
+                if (type == EnumsLib.RayTraceType.BLOCK) {
+                    Bukkit.getPluginManager().callEvent(new RayTraceMissEvent(player));
                 }
 
+                Bukkit.getPluginManager().callEvent(new RayTraceEntityEvent(player, entityResult));
                 playerCache.put(uuid, EnumsLib.RayTraceType.ENTITY);
                 return;
             }
@@ -85,20 +86,17 @@ public class RayTraceTask {
 
             if (blockResult != null && blockResult.getHitBlock() != null) {
                 if (validBlocks.contains(blockResult.getHitBlock().getType())) {
-                    if (type != EnumsLib.RayTraceType.BLOCK) {
-                        Bukkit.getPluginManager().callEvent(new RayTraceBlockEvent(player, blockResult));
+                    if (type == EnumsLib.RayTraceType.ENTITY) {
+                        Bukkit.getPluginManager().callEvent(new RayTraceMissEvent(player));
                     }
 
+                    Bukkit.getPluginManager().callEvent(new RayTraceBlockEvent(player, blockResult));
                     playerCache.put(uuid, EnumsLib.RayTraceType.BLOCK);
                     return;
                 }
             }
 
-            if (type != EnumsLib.RayTraceType.NONE) {
-                Bukkit.getPluginManager().callEvent(new RayTraceMissEvent(player));
-            }
-
-            playerCache.put(uuid, EnumsLib.RayTraceType.NONE);
+            Bukkit.getPluginManager().callEvent(new RayTraceMissEvent(player));
         }
     }
 
@@ -107,7 +105,7 @@ public class RayTraceTask {
     }
 
     public static void add(UUID uuid) {
-        playerCache.put(uuid, EnumsLib.RayTraceType.NONE);
+        playerCache.put(uuid, null);
     }
 
     public static void remove(UUID uuid) {

@@ -7,6 +7,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PDCUtils {
 
@@ -20,10 +24,10 @@ public class PDCUtils {
         return null;
     }
 
-    public static boolean isCustomItem(ItemStack item, NamespacedKey ITEM_KEY) {
+    public static boolean isCustomItem(ItemStack item, NamespacedKey key) {
         if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) return false;
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        return pdc.has(ITEM_KEY, PersistentDataType.INTEGER);
+        return pdc.has(key, PersistentDataType.INTEGER);
     }
 
     public static int getToolLevel(ItemStack item, NamespacedKey REQ_LEVEL_KEY) {
@@ -49,6 +53,12 @@ public class PDCUtils {
         return pdc.getOrDefault(INTEGER_KEY, PersistentDataType.INTEGER, 0);
     }
 
+    public static List<Integer> getIntList(ItemStack item, NamespacedKey key) {
+        if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) return null;
+
+        PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
+        return pdc.getOrDefault(key, PersistentDataType.LIST.integers(), new ArrayList<>());
+    }
 
     public static void addInteger(ItemMeta meta, NamespacedKey PDC_KEY, int value) {
         if (meta == null) {
@@ -68,6 +78,16 @@ public class PDCUtils {
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
         pdc.set(PDC_KEY, PersistentDataType.DOUBLE, value);
+    }
+
+    public static void addIntList(ItemMeta meta, NamespacedKey PDC_KEY, List<Integer> value) {
+        if (meta == null) {
+            ConsoleUtils.severe("Unable to add PDC data on " + meta.getDisplayName() + " because meta is NULL.");
+            return;
+        }
+
+        PersistentDataContainer pdc = meta.getPersistentDataContainer();
+        pdc.set(PDC_KEY, PersistentDataType.LIST.integers(), value);
     }
 
     public static ItemStack addData(ItemStack item, NamespacedKey PDC_KEY, int value) {

@@ -168,4 +168,28 @@ public class TextUtils {
 
         return filled.repeat(filledBars) + empty.repeat(emptyBars);
     }
+
+    /**
+     * Converts a comma-separated string to a list of integers.
+     *
+     * @param input the input string (e.g., "1, 2, 3, 4, 5")
+     * @return a list of integers parsed from the input string
+     */
+    public static List<Integer> toIntegerList(String input) {
+        List<Integer> list = new ArrayList<>();
+        if (input == null || input.isBlank()) {
+            return list;
+        }
+
+        String[] tokens = input.split(",");
+        for (String token : tokens) {
+            try {
+                list.add(Integer.parseInt(token.trim()));
+            } catch (NumberFormatException e) {
+                // Skip invalid entries
+            }
+        }
+
+        return list;
+    }
 }

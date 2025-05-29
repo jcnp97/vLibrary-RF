@@ -34,7 +34,6 @@ public class EnumsLib {
 
     public enum RayTraceType {
         ENTITY,
-        BLOCK,
-        NONE
+        BLOCK
     }
 }

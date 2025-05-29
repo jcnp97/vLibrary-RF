@@ -18,7 +18,7 @@ import java.util.*;
 
 public class ToolsUtils {
 
-    public static Map<String, ItemStack> loadTools(@NotNull Plugin plugin, @NotNull String fileName) {
+    public static Map<String, ItemStack> load(@NotNull Plugin plugin, @NotNull String fileName) {
         Map<String, ItemStack> toolCache = new LinkedHashMap<>();
         NamespacedKey TOOL_KEY = new NamespacedKey(plugin, "custom_tool");
         int toolID = 1;
@@ -48,8 +48,8 @@ public class ToolsUtils {
             boolean unbreakable = yaml.getBoolean(path + "unbreakable", false);
             int slots = yaml.getInt(path + "decoration-slot", 0);
 
-            Map<String, Double> doubleMap = getDouble(yaml, path);
-            Map<String, Integer> intMap = getInt(yaml, path);
+            Map<String, Double> doubleMap = ItemCoreUtils.getDouble(yaml, path);
+            Map<String, Integer> intMap = ItemCoreUtils.getInt(yaml, path);
 
             if (materialName == null || displayName == null) {
                 ConsoleUtils.severe(plugin.getName(), "Invalid configuration for tool: " + toolName);
@@ -71,7 +71,7 @@ public class ToolsUtils {
                 continue;
             }
 
-            List<String> newLore = getModifiedLore(lore, doubleMap, intMap);
+            List<String> newLore = ItemCoreUtils.getLore(lore, doubleMap, intMap);
 
             if (slots > 0) {
                 for (int i = 0; i < slots; i++) {
@@ -112,68 +112,5 @@ public class ToolsUtils {
         }
 
         return toolCache;
-    }
-
-    private static Map<String, Double> getDouble(YamlDocument yaml, String path) {
-        Map<String, Double> stats = new HashMap<>();
-        String newPath = path + "custom-stats.double";
-        Section section = YAMLUtils.getSection(yaml, newPath);
-
-        if (section != null) {
-            for (String statName : section.getRoutesAsStrings(false)) {
-                double value = yaml.getDouble(newPath + "." + statName);
-                stats.put(statName, value);
-            }
-        }
-
-        return stats;
-    }
-
-    private static Map<String, Integer> getInt(YamlDocument yaml, String path) {
-        Map<String, Integer> stats = new HashMap<>();
-        String newPath = path + "custom-stats.integer";
-        Section section = YAMLUtils.getSection(yaml, newPath);
-
-        if (section != null) {
-            for (String statName : section.getRoutesAsStrings(false)) {
-                int value = yaml.getInt(newPath + "." + statName);
-                stats.put(statName, value);
-            }
-        }
-
-        return stats;
-    }
-
-    private static List<String> getEnchants(YamlDocument yaml, String path) {
-        List<String> enchants = new ArrayList<>();
-
-        List<String> items = yaml.getStringList(path + "enchants");
-        if (items != null && !items.isEmpty()) {
-            enchants.addAll(items);
-        }
-
-        return enchants;
-    }
-
-    public static List<String> getModifiedLore(List<String> lore, Map<String, Double> doubleMap, Map<String, Integer> intMap) {
-        List<String> newLore = new ArrayList<>();
-
-        for (String line : lore) {
-            String processedLine = line;
-
-            // Replace placeholders with integer values
-            for (Map.Entry<String, Integer> entry : intMap.entrySet()) {
-                processedLine = processedLine.replace("{" + entry.getKey() + "}", String.valueOf(entry.getValue()));
-            }
-
-            // Replace placeholders with double values
-            for (Map.Entry<String, Double> entry : doubleMap.entrySet()) {
-                processedLine = processedLine.replace("{" + entry.getKey() + "}", String.valueOf(entry.getValue()));
-            }
-
-            newLore.add(processedLine);
-        }
-
-        return newLore;
     }
 }

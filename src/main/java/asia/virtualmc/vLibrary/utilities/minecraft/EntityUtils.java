@@ -1,10 +1,15 @@
 package asia.virtualmc.vLibrary.utilities.minecraft;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.boat.BambooChestRaft;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public class EntityUtils {
 
@@ -33,5 +38,13 @@ public class EntityUtils {
         }
 
         return null;
+    }
+
+    public static UUID getUUID(@NotNull Entity entity) {
+        return entity.getUniqueId();
+    }
+
+    public static Entity getEntity(@NotNull UUID uuid) {
+        return Bukkit.getEntity(uuid);
     }
 }
