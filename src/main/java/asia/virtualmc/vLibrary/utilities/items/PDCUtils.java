@@ -53,11 +53,11 @@ public class PDCUtils {
         return pdc.getOrDefault(INTEGER_KEY, PersistentDataType.INTEGER, 0);
     }
 
-    public static List<Integer> getIntList(ItemStack item, NamespacedKey key) {
+    public static int[] getIntArray(ItemStack item, NamespacedKey key) {
         if (item == null || item.getType() == Material.AIR || !item.hasItemMeta()) return null;
 
         PersistentDataContainer pdc = item.getItemMeta().getPersistentDataContainer();
-        return pdc.getOrDefault(key, PersistentDataType.LIST.integers(), new ArrayList<>());
+        return pdc.getOrDefault(key, PersistentDataType.INTEGER_ARRAY, new int[]{});
     }
 
     public static void addInteger(ItemMeta meta, NamespacedKey PDC_KEY, int value) {
@@ -80,14 +80,14 @@ public class PDCUtils {
         pdc.set(PDC_KEY, PersistentDataType.DOUBLE, value);
     }
 
-    public static void addIntList(ItemMeta meta, NamespacedKey PDC_KEY, List<Integer> value) {
+    public static void addIntArray(ItemMeta meta, NamespacedKey PDC_KEY, int[] value) {
         if (meta == null) {
             ConsoleUtils.severe("Unable to add PDC data on " + meta.getDisplayName() + " because meta is NULL.");
             return;
         }
 
         PersistentDataContainer pdc = meta.getPersistentDataContainer();
-        pdc.set(PDC_KEY, PersistentDataType.LIST.integers(), value);
+        pdc.set(PDC_KEY, PersistentDataType.INTEGER_ARRAY, value);
     }
 
     public static ItemStack addData(ItemStack item, NamespacedKey PDC_KEY, int value) {

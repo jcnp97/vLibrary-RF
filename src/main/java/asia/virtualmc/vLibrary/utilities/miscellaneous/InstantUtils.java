@@ -1,5 +1,6 @@
 package asia.virtualmc.vLibrary.utilities.miscellaneous;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -72,13 +73,29 @@ public class InstantUtils {
     }
 
     /**
-     * Formats the specified {@link Instant} as a readable local date-time string.
+     * Converts a future {@link Instant} into a human-readable string showing
+     * the time difference from the current moment in hours, minutes, or seconds.
      *
-     * @param time the time to format
-     * @return a formatted date-time string in the system's default time zone
+     * @param futureTime the future instant to compare with current time
+     * @return a readable string (e.g., "2h 15m", "3m", or "45s")
      */
-    public static String toReadableFormat(Instant time) {
-        return DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault()).format(time);
+    public static String toReadableRemaining(Instant futureTime) {
+        if (futureTime == null) {
+            return "-";
+        }
+
+        Duration duration = Duration.between(Instant.now(), futureTime);
+
+        long seconds = duration.getSeconds();
+        if (seconds <= 0) return "0s";
+
+        long hours = seconds / 3600;
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+
+        if (hours > 0) return String.format("%dh %dm", hours, minutes);
+        if (minutes > 0) return String.format("%dm", minutes);
+        return String.format("%ds", secs);
     }
 
     /**

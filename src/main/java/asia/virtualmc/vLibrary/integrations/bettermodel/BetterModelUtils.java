@@ -27,6 +27,7 @@ public class BetterModelUtils {
             return null;
         }
 
+        location.add(0.5, 1.0, 0.5);
         Entity entity = world.spawn(location, org.bukkit.entity.ItemDisplay.class, e -> {
             e.setInvulnerable(true);
             e.setPersistent(true);

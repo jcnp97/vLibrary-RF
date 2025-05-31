@@ -13,7 +13,7 @@ public class TextUtils {
      * @param string The input string to format (e.g., "HELLO_WORLD" becomes "Hello World").
      * @return A human-readable version of the string with proper capitalization, or the original string if null or empty.
      */
-    public static String getFormatted(String string) {
+    public static String format(String string) {
         if (string == null || string.isEmpty()) return string;
 
         String formatted = string.replace("_", " ").toLowerCase();
@@ -63,7 +63,7 @@ public class TextUtils {
      * @param charCount the maximum number of characters allowed per line
      * @return a new list of lore strings, formatted to fit within the specified character count
      */
-    public static List<String> divideStringList(List<String> stringList, int charCount) {
+    public static List<String> divide(List<String> stringList, int charCount) {
         List<String> formattedLore = new ArrayList<>();
 
         for (String line : stringList) {
@@ -96,7 +96,7 @@ public class TextUtils {
      * @param input the string to convert
      * @return the converted string with stylized characters
      */
-    public static String convertToNewFont(String input) {
+    public static String toSmallFont(String input) {
         String NORMAL = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String CONVERTED = "ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -170,26 +170,32 @@ public class TextUtils {
     }
 
     /**
-     * Converts a comma-separated string to a list of integers.
+     * Converts a comma-separated string to an array of integers.
      *
      * @param input the input string (e.g., "1, 2, 3, 4, 5")
-     * @return a list of integers parsed from the input string
+     * @return an array of integers parsed from the input string
      */
-    public static List<Integer> toIntegerList(String input) {
-        List<Integer> list = new ArrayList<>();
+    public static int[] toIntArray(String input) {
         if (input == null || input.isBlank()) {
-            return list;
+            return new int[0];
         }
 
         String[] tokens = input.split(",");
+        List<Integer> tempList = new ArrayList<>();
+
         for (String token : tokens) {
             try {
-                list.add(Integer.parseInt(token.trim()));
+                tempList.add(Integer.parseInt(token.trim()));
             } catch (NumberFormatException e) {
                 // Skip invalid entries
             }
         }
 
-        return list;
+        int[] result = new int[tempList.size()];
+        for (int i = 0; i < tempList.size(); i++) {
+            result[i] = tempList.get(i);
+        }
+
+        return result;
     }
 }

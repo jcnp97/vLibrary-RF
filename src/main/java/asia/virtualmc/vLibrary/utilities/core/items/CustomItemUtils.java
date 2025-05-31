@@ -43,7 +43,7 @@ public class CustomItemUtils {
 
             Map<String, Double> doubleMap = ItemCoreUtils.getDouble(yaml, path);
             Map<String, Integer> intMap = ItemCoreUtils.getInt(yaml, path);
-            Map<String, List<Integer>> intListMap = ItemCoreUtils.getIntList(yaml, path);
+            Map<String, int[]> intArrayMap = ItemCoreUtils.getIntArray(yaml, path);
 
             if (materialName == null || displayName == null) {
                 ConsoleUtils.severe(plugin.getName(), "Invalid configuration for item: " + itemName);
@@ -83,11 +83,9 @@ public class CustomItemUtils {
                 PDCUtils.addDouble(meta, key, entry.getValue());
             }
 
-            if (!intListMap.isEmpty()) {
-                for (Map.Entry<String, List<Integer>> entry : intListMap.entrySet()) {
-                    NamespacedKey key = new NamespacedKey(plugin, entry.getKey().replace("-", "_"));
-                    PDCUtils.addIntList(meta, key, entry.getValue());
-                }
+            for (Map.Entry<String, int[]> entry : intArrayMap.entrySet()) {
+                NamespacedKey key = new NamespacedKey(plugin, entry.getKey().replace("-", "_"));
+                PDCUtils.addIntArray(meta, key, entry.getValue());
             }
 
             item.setItemMeta(meta);

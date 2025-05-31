@@ -38,14 +38,7 @@ public class YAMLUtils {
     }
 
     public static Section getSection(@NotNull YamlDocument yaml, @NotNull String sectionPath) {
-        Section section = yaml.getSection(sectionPath);
-
-        if (section == null) {
-            Bukkit.getServer().getLogger().severe("Missing " + sectionPath + "!");
-            return null;
-        }
-
-        return section;
+        return yaml.getSection(sectionPath);
     }
 
     public static Section getSection(@NotNull Plugin plugin, @NotNull String fileName, @NotNull String sectionPath) {

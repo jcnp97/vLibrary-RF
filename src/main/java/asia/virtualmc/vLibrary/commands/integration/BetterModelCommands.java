@@ -39,7 +39,7 @@ public class BetterModelCommands {
                             return;
                         }
 
-                        Location location = targetBlock.getLocation().add(0.5, 1.0, 0.5);
+                        Location location = targetBlock.getLocation();
                         Entity result = BetterModelUtils.spawn(location, modelName);
 
                         if (result == null) {

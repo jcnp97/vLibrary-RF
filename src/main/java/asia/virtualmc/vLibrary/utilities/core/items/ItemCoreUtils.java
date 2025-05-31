@@ -42,15 +42,15 @@ public class ItemCoreUtils {
         return stats;
     }
 
-    public static Map<String, List<Integer>> getIntList(YamlDocument yaml, String path) {
-        Map<String, List<Integer>> stats = new HashMap<>();
-        String newPath = path + "custom-stats.list";
-        Section section = YAMLUtils.getSection(yaml, path);
+    public static Map<String, int[]> getIntArray(YamlDocument yaml, String path) {
+        Map<String, int[]> stats = new HashMap<>();
+        String newPath = path + "custom-stats.array";
+        Section section = YAMLUtils.getSection(yaml, newPath);
 
         if (section != null) {
             for (String statName : section.getRoutesAsStrings(false)) {
                 String value = yaml.getString(newPath + "." + statName);
-                stats.put(statName, TextUtils.toIntegerList(value));
+                stats.put(statName, TextUtils.toIntArray(value));
             }
         }
 
