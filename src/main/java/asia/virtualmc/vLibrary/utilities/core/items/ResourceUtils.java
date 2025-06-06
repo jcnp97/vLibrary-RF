@@ -1,6 +1,5 @@
 package asia.virtualmc.vLibrary.utilities.core.items;
 
-import asia.virtualmc.vLibrary.utilities.files.ModelUtils;
 import asia.virtualmc.vLibrary.utilities.files.YAMLUtils;
 import asia.virtualmc.vLibrary.utilities.items.MetaUtils;
 import asia.virtualmc.vLibrary.utilities.items.PDCUtils;
@@ -242,7 +241,7 @@ public class ResourceUtils {
                 }
 
                 item.setItemMeta(meta);
-                resourceCache.put(resourceName, new Resource(numericalID, rarityID, 0, item.clone()));
+                resourceCache.put(resourceName + "_" + rarityName, new Resource(numericalID, rarityID, 0, item.clone()));
                 numericalID++;
 
                 if (generateModel) {
@@ -254,28 +253,114 @@ public class ResourceUtils {
         }
 
         if (generateModel) {
-            generateModels(plugin, section, modelCache);
+            ItemCoreUtils.generateModels(plugin, section, modelCache);
         }
 
         ConsoleUtils.info("[" + plugin.getName() + "] ", "Successfully loaded " + resourceCache.size() + " resources.");
         return resourceCache;
     }
 
-    private static void generateModels(Plugin plugin, Section section, Map<String, Integer> modelCache) {
-        String jsonFile = section.getString("model-generation.json-format");
-        String path = section.getString("model-generation.path");
-        String result = section.getString("model-generation.result");
-        String material = section.getString("model-generation.material");
-        Map<Integer, String> modelPathCache = new LinkedHashMap<>();
+    public static Map<String, ItemStack> load(@NotNull Plugin plugin,
+                                              @NotNull String filePath,
+                                              @NotNull NamespacedKey resourceKey,
+                                              Map<Integer, Rarity> rarityMap) {
 
-        for (Map.Entry<String, Integer> entry : modelCache.entrySet()) {
-            modelPathCache.put(entry.getValue(), path + entry.getKey());
+        Map<String, ItemStack> cache = new LinkedHashMap<>();
+        List<String> rarities = Arrays.asList("common", "uncommon", "rare", "unique", "epic", "mythical", "exotic");
+
+        YamlDocument yaml = YAMLUtils.getYaml(plugin, filePath);
+        if (yaml == null) {
+            ConsoleUtils.severe("[" + plugin.getName() + "] ", "Couldn't find custom-drops.yml. Skipping resource creation..");
+            return null;
         }
 
-        for (String resourceName : modelCache.keySet()) {
-            ModelUtils.generate(plugin, path, resourceName, jsonFile, result);
+        int itemID = 1;
+        int rarityID = 1;
+
+        for (String rarityName : rarities) {
+            Section resourceSection = YAMLUtils.getSection(yaml, rarityName);
+            if (resourceSection == null) {
+                ConsoleUtils.severe("[" + plugin.getName() + "] ", "Looks like " + filePath + " is empty. Skipping resource creation..");
+                return null;
+            }
+
+            Set<String> resourceNames = new LinkedHashSet<>(resourceSection.getRoutesAsStrings(false));
+            for (String resourceName : resourceNames) {
+                String name = resourceSection.getString(resourceName + ".name");
+                List<String> loreList = resourceSection.getStringList(resourceName + ".lore");
+                String materialAsString = resourceSection.getString(resourceName + ".material");
+                int modelData = resourceSection.getInt(resourceName + ".custom-model-data");
+
+                Material baseMaterial;
+                try {
+                    baseMaterial = Material.valueOf(materialAsString.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    plugin.getLogger().severe("Invalid material: " + materialAsString + " defaulting to PAPER.");
+                    baseMaterial = Material.PAPER;
+                }
+
+                //Map<String, Double> doubleMap = ItemCoreUtils.getDouble(yaml, resourceName);
+                Map<String, Integer> intMap = ItemCoreUtils.getInt(yaml, resourceName);
+                Rarity data = rarityMap.get(rarityID);
+
+                List<String> modifiedLore = new ArrayList<>();
+                modifiedLore.add(data.tag);
+                modifiedLore.addAll(loreList);
+
+                ItemStack item = new ItemStack(baseMaterial);
+                ItemMeta meta = item.getItemMeta();
+
+                if (meta != null) {
+                    MetaUtils.setDisplayName(meta, data.color + name);
+                    MetaUtils.setLore(meta, modifiedLore);
+                    MetaUtils.setCustomModelData(meta, modelData);
+
+                    PDCUtils.addInteger(meta, resourceKey, itemID);
+
+                    for (Map.Entry<String, Integer> entry : intMap.entrySet()) {
+                        NamespacedKey key = new NamespacedKey(plugin, entry.getKey().replace("-", "_"));
+                        PDCUtils.addInteger(meta, key, entry.getValue());
+                    }
+                }
+
+                item.setItemMeta(meta);
+                cache.put(resourceName + "_" + rarityName, item.clone());
+                itemID++;
+            }
+
+            rarityID++;
         }
 
-        ModelUtils.generateBaseModel(plugin, material, result, modelPathCache);
+        return cache;
+    }
+
+    public static Map<Integer, Rarity> loadRarities(@NotNull Plugin plugin,
+                                                    @NotNull String fileName) {
+
+        Map<Integer, Rarity> cache = new LinkedHashMap<>();
+        List<String> rarities = Arrays.asList("common", "uncommon", "rare", "unique", "epic", "mythical", "exotic");
+
+        YamlDocument yaml = YAMLUtils.getYaml(plugin, fileName);
+        if (yaml == null) {
+            ConsoleUtils.severe("[" + plugin.getName() + "] ", "Couldn't find " + fileName + ". Skipping resource creation..");
+            return null;
+        }
+
+        cache.put(0, new Rarity("None", "None", yaml.getDouble("exp.none"), 0, 0));
+        int rarityID = 1;
+
+        for (String rarityName : rarities) {
+            String tag = yaml.getString("rarity-tags." + rarityName);
+            String color = yaml.getString("rarity-color." + rarityName);
+            double exp = yaml.getDouble("exp." + rarityName);
+            double weight = yaml.getDouble("weight." + rarityName);
+            double price = yaml.getDouble("price." + rarityName);
+
+            cache.put(rarityID, new Rarity(tag, color, exp, weight, price));
+            rarityID++;
+        }
+
+        ConsoleUtils.info("Loaded " + cache.size() + " rarities from settings.yml");
+        return cache;
     }
 }

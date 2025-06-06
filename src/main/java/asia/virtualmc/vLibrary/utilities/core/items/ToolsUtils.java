@@ -83,6 +83,7 @@ public class ToolsUtils {
             MetaUtils.setDisplayName(meta, displayName);
             MetaUtils.setCustomModelData(meta, modelData);
             MetaUtils.setLore(meta, newLore);
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
             if (unbreakable) {
                 meta.setUnbreakable(true);

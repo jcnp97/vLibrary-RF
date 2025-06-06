@@ -74,9 +74,15 @@ public class BetterModelUtils {
     public static boolean change(Entity entity, String modelName) {
         if (entity == null || modelName == null) return false;
 
-        EntityTracker oldTracker = EntityTracker.tracker(entity);
-        if (oldTracker != null) {
-            oldTracker.close();
+        String currentModel = entity.getPersistentDataContainer()
+                .get(EntityTracker.TRACKING_ID, PersistentDataType.STRING);
+        if (modelName.equals(currentModel)) {
+            return false;
+        }
+
+        EntityTracker tracker = EntityTracker.tracker(entity);
+        if (tracker != null) {
+            tracker.close();
         }
 
         Optional<ModelRenderer> rendererOpt = BetterModel.model(modelName);

@@ -1,5 +1,7 @@
 package asia.virtualmc.vLibrary.utilities.miscellaneous;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -46,6 +48,8 @@ public class InstantUtils {
      * @return true if the specified time is after the current time; false otherwise
      */
     public static boolean isFuture(Instant time) {
+        if (time == null) return false;
+
         return Instant.now().isBefore(time);
     }
 
@@ -112,6 +116,10 @@ public class InstantUtils {
      * @return the percentage of elapsed time from startTime to futureTime, as a double between 0.0 and 100.0
      */
     public static double getPercent(Instant startTime, Instant futureTime) {
+        if (startTime == null || futureTime == null) {
+            return 0;
+        }
+
         Instant now = Instant.now();
         long totalMillis = futureTime.toEpochMilli() - startTime.toEpochMilli();
         long elapsedMillis = now.toEpochMilli() - startTime.toEpochMilli();
@@ -125,25 +133,52 @@ public class InstantUtils {
     }
 
     /**
-     * Converts an {@link Instant} to a long value representing epoch seconds for database storage.
-     *
-     * @param time the {@link Instant} to convert
-     * @return the epoch second representation of the time
+     * Returns the epoch‐second equivalent, or null if the Instant is null.
      */
-    public static long serialize(Instant time) {
-        if (time == null) {
-            throw new IllegalArgumentException("Instant cannot be null");
-        }
-        return time.getEpochSecond();
+    public static Long serialize(Instant time) {
+        return (time == null) ? null : time.getEpochSecond();
     }
 
     /**
-     * Converts a long value representing epoch seconds from the database into an {@link Instant}.
-     *
-     * @param epochSeconds the epoch seconds value
-     * @return the corresponding {@link Instant}
+     * Returns the Instant equivalent, or null if the Long value is null.
      */
-    public static Instant deserialize(long epochSeconds) {
-        return Instant.ofEpochSecond(epochSeconds);
+    public static Instant deserialize(Long time) {
+        if (time == null) {
+            return null;
+        }
+        return Instant.ofEpochSecond(time);
+    }
+
+    /**
+     * Returns a new Instant that lies partway between now and the given future Instant.
+     * A multiplier of 0.5 will yield a point exactly halfway.
+     *
+     * @param futureTime the target Instant (must be after Instant.now())
+     * @param multiplier a factor between 0.0 and 1.0 indicating how far from now toward futureTime
+     * @return Instant.now() + ((futureTime - Instant.now()) × multiplier)
+     * @throws IllegalArgumentException if futureTime is null or not in the future
+     */
+    public static Instant multiplyFuture(Instant futureTime, double multiplier) {
+        if (futureTime == null) {
+            throw new IllegalArgumentException("Instant cannot be null");
+        }
+        Instant now = Instant.now();
+        if (!futureTime.isAfter(now)) {
+            throw new IllegalArgumentException("futureTime must be after now");
+        }
+
+        long remainingSeconds = futureTime.getEpochSecond() - now.getEpochSecond();
+        int   remainingNanos   = futureTime.getNano() - now.getNano();
+        if (remainingNanos < 0) {
+            remainingSeconds--;
+            remainingNanos += 1_000_000_000;
+        }
+
+        double totalRemaining = remainingSeconds + remainingNanos / 1_000_000_000.0;
+        double scaled          = totalRemaining * multiplier;
+        long   scaledSec       = (long) scaled;
+        int    scaledNanos     = (int) ((scaled - scaledSec) * 1_000_000_000);
+
+        return now.plusSeconds(scaledSec).plusNanos(scaledNanos);
     }
 }

@@ -85,10 +85,6 @@
       <url>https://repo.maven.apache.org/maven2</url>
     </repository>
     <repository>
-      <id>jitpack</id>
-      <url>https://jitpack.io/</url>
-    </repository>
-    <repository>
       <id>fren_gor</id>
       <url>https://nexus.frengor.com/repository/public/</url>
     </repository>

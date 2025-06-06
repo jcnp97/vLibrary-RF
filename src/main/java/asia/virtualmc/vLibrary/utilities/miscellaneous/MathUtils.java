@@ -45,4 +45,16 @@ public class MathUtils {
         double result = ((double) currentValue / maxValue) * 100.0;
         return Math.min(100.0, Math.max(0.0, result));
     }
+
+    /**
+     * Multiplies the given integer by the specified multiplier and returns
+     * the result rounded to the nearest integer.
+     *
+     * @param value      the integer value to multiply
+     * @param multiplier the multiplier to apply
+     * @return the rounded result of (value * multiplier)
+     */
+    public static int multiply(int value, double multiplier) {
+        return (int) Math.round(value * multiplier);
+    }
 }

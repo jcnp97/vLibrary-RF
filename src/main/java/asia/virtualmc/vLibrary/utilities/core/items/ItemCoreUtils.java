@@ -1,14 +1,13 @@
 package asia.virtualmc.vLibrary.utilities.core.items;
 
+import asia.virtualmc.vLibrary.utilities.files.ModelUtils;
 import asia.virtualmc.vLibrary.utilities.files.YAMLUtils;
 import asia.virtualmc.vLibrary.utilities.text.TextUtils;
 import dev.dejvokep.boostedyaml.YamlDocument;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
+import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ItemCoreUtils {
 
@@ -86,5 +85,23 @@ public class ItemCoreUtils {
         }
 
         return newLore;
+    }
+
+    public static void generateModels(Plugin plugin, Section section, Map<String, Integer> modelCache) {
+        String jsonFile = section.getString("json-format");
+        String path = section.getString("path");
+        String result = section.getString("result");
+        String material = section.getString("material");
+        Map<Integer, String> modelPathCache = new LinkedHashMap<>();
+
+        for (Map.Entry<String, Integer> entry : modelCache.entrySet()) {
+            modelPathCache.put(entry.getValue(), path + entry.getKey());
+        }
+
+        for (String resourceName : modelCache.keySet()) {
+            ModelUtils.generate(plugin, path, resourceName, jsonFile, result);
+        }
+
+        ModelUtils.generateBaseModel(plugin, material, result, modelPathCache);
     }
 }

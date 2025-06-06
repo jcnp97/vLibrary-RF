@@ -139,14 +139,19 @@ public class HologramUtils {
      */
     public static void temporaryText(Plugin plugin, String text, Player player, float x, float y, float z, Location location) {
         UUID hologramID = player.getUniqueId();
+        String idString = hologramID.toString();
         ScheduledTask oldTask = tempHoloCache.getIfPresent(hologramID);
 
         if (oldTask != null) {
             oldTask.cancel();
-            remove(hologramID);
         }
 
-        TextHologram textHologram = new TextHologram(hologramID.toString())
+        hologramManager.getHologram(idString).ifPresent(h -> {
+            hologramManager.remove(idString);
+            hologramIDs.remove(hologramID);
+        });
+
+        TextHologram textHologram = new TextHologram(idString)
                 .setMiniMessageText(text)
                 .setAlignment(TextDisplay.TextAlignment.CENTER)
                 .addViewer(player)
@@ -155,7 +160,12 @@ public class HologramUtils {
         hologramManager.spawn(textHologram, location);
         hologramIDs.add(hologramID);
 
-        ScheduledTask delayedTask = plugin.getServer().getGlobalRegionScheduler().runDelayed(plugin, task -> remove(hologramID), tempHoloDuration * 20L);
+        ScheduledTask delayedTask = plugin.getServer()
+                .getGlobalRegionScheduler()
+                .runDelayed(plugin, task -> {
+                    hologramManager.remove(idString);
+                    hologramIDs.remove(hologramID);
+                }, tempHoloDuration * 20L);
         tempHoloCache.put(hologramID, delayedTask);
     }
 

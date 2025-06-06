@@ -7,7 +7,7 @@ import asia.virtualmc.vLibrary.utilities.miscellaneous.MathUtils;
 
 import java.util.List;
 
-public class ProgressBarUtils {
+public class BarUtils {
     private static List<String> unicodes;
 
     private static void initialize() {
@@ -18,12 +18,24 @@ public class ProgressBarUtils {
         }
     }
 
-    public static String getProgressBar(double currentValue, double maxValue) {
+    public static String get(double current, double max) {
         if (unicodes == null) {
             initialize();
         }
 
-        double percent = MathUtils.percent(currentValue, maxValue);
+        double percent = MathUtils.percent(current, max);
+        int index = (int) (percent / 5.00);
+
+        return "<white>" + unicodes.get(index) +
+                " <gray>(<green>" + DigitUtils.format(percent) + "%<gray>)";
+    }
+
+    public static String get(int current, int max) {
+        if (unicodes == null) {
+            initialize();
+        }
+
+        double percent = MathUtils.percent(current, max);
         int index = (int) (percent / 5.00);
 
         return "<white>" + unicodes.get(index) +
